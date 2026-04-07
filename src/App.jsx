@@ -11,6 +11,9 @@ import Grades from './pages/Grades'
 import Fees from './pages/Fees'
 import Library from './pages/Library'
 import Transport from './pages/Transport'
+import Timetable from './pages/Timetable'
+import Announcements from './pages/Announcements'
+import HR from './pages/HR'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import Layout from './components/Layout'
@@ -49,6 +52,9 @@ function App() {
             <Route path="fees" element={<Fees />} />
             <Route path="library" element={<Library />} />
             <Route path="transport" element={<Transport />} />
+            <Route path="timetable" element={<Timetable />} />
+            <Route path="announcements" element={<Announcements />} />
+            <Route path="hr" element={<HR />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
           </Route>

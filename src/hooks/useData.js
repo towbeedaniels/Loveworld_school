@@ -30,6 +30,63 @@ export function useStudents() {
   return { students, loading, refetch: fetchStudents }
 }
 
+export function useTeachers() {
+  const [teachers, setTeachers] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const fetchTeachers = async () => {
+    try {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('teachers')
+        .select('*')
+        .eq('status', 'active')
+        .order('last_name', { ascending: true })
+
+      if (error) throw error
+      setTeachers(data || [])
+    } catch (err) {
+      console.error('Error fetching teachers:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchTeachers()
+  }, [])
+
+  return { teachers, loading, refetch: fetchTeachers }
+}
+
+export function useSubjects() {
+  const [subjects, setSubjects] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const fetchSubjects = async () => {
+    try {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('subjects')
+        .select('*')
+        .order('name', { ascending: true })
+
+      if (error) throw error
+      setSubjects(data || [])
+    } catch (err) {
+      console.error('Error fetching subjects:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchSubjects()
+  }, [])
+
+  return { subjects, loading, refetch: fetchSubjects }
+}
+
 export function useClasses() {
   const [classes, setClasses] = useState([])
   const [loading, setLoading] = useState(true)
