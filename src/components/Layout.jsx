@@ -24,21 +24,21 @@ import {
 } from 'lucide-react'
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Students', href: '/students', icon: Users },
-  { name: 'Teachers', href: '/teachers', icon: GraduationCap },
-  { name: 'Classes', href: '/classes', icon: BookOpen },
-  { name: 'Timetable', href: '/timetable', icon: CalendarDays },
-  { name: 'Attendance', href: '/attendance', icon: CalendarCheck },
-  { name: 'Grades', href: '/grades', icon: Award },
-  { name: 'Fees', href: '/fees', icon: DollarSign },
-  { name: 'Library', href: '/library', icon: Library },
-  { name: 'Transport', href: '/transport', icon: Bus },
-  { name: 'Announcements', href: '/announcements', icon: Megaphone },
-  { name: 'HR', href: '/hr', icon: UserCog },
-  { name: 'Reports', href: '/reports', icon: FileText },
-  { name: 'Advanced Reports', href: '/advanced-reports', icon: TrendingUp },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Dashboard', href: '/portal', icon: LayoutDashboard },
+  { name: 'Students', href: '/portal/students', icon: Users },
+  { name: 'Teachers', href: '/portal/teachers', icon: GraduationCap },
+  { name: 'Classes', href: '/portal/classes', icon: BookOpen },
+  { name: 'Timetable', href: '/portal/timetable', icon: CalendarDays },
+  { name: 'Attendance', href: '/portal/attendance', icon: CalendarCheck },
+  { name: 'Grades', href: '/portal/grades', icon: Award },
+  { name: 'Fees', href: '/portal/fees', icon: DollarSign },
+  { name: 'Library', href: '/portal/library', icon: Library },
+  { name: 'Transport', href: '/portal/transport', icon: Bus },
+  { name: 'Announcements', href: '/portal/announcements', icon: Megaphone },
+  { name: 'HR', href: '/portal/hr', icon: UserCog },
+  { name: 'Reports', href: '/portal/reports', icon: FileText },
+  { name: 'Advanced Reports', href: '/portal/advanced-reports', icon: TrendingUp },
+  { name: 'Settings', href: '/portal/settings', icon: Settings },
 ]
 
 export default function Layout() {
