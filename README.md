@@ -246,6 +246,33 @@ school-management-system/
 - Node.js 16+ and npm
 - A Supabase account and project ([supabase.com](https://supabase.com))
 
+## 🌐 Website & Portal Structure
+
+### Public School Website (Home Page)
+When users visit `http://localhost:5173/`, they'll see the beautiful public school website with:
+- **Hero Section** - School branding and call-to-action
+- **About Section** - School history and mission
+- **Programs** - Academic programs offered
+- **Admissions** - Enrollment process
+- **News & Events** - Latest updates
+- **Testimonials** - Parent reviews
+- **Contact** - Contact form and information
+- **Footer** - Quick links and social media
+
+### School Management Portal
+Users can access the management portal by clicking **"Portal Login"** in the navbar:
+- **Login**: `http://localhost:5173/portal/login`
+- **Register**: `http://localhost:5173/portal/register`
+- **Dashboard**: `http://localhost:5173/portal` (after login)
+
+**Portal Features:**
+- Complete school management system
+- 19 functional modules
+- Role-based access control
+- Easy navigation back to website
+
+---
+
 ## 🚀 Setup Instructions
 
 ### Prerequisites
@@ -342,30 +369,29 @@ npm run dev
 
 The application will open automatically at `http://localhost:5173`
 
-### Step 4: Create Your First Account
+### Step 4: Explore the System
 
-1. Click **"Sign up"** on the login page
-2. Fill in:
+**Public Website:**
+- Open http://localhost:5173
+- Browse the beautiful school website
+- Learn about programs, admissions, and more
+
+**Access the Management Portal:**
+1. Click **"Portal Login"** in the website navbar
+2. Or go directly to http://localhost:5173/portal/login
+3. Click **"Sign up"** to create your first account
+4. Fill in:
    - Full Name
    - Email address
    - Password (min 6 characters)
    - Role (Admin recommended for first user)
-3. Click **"Sign Up"**
-4. You'll be redirected to login
-5. Sign in with your credentials
+5. Click **"Sign Up"**
+6. You'll be redirected to login
+7. Sign in with your credentials
 
-### Step 5: Explore the System
-
-You now have access to all 19 modules:
-- Dashboard with analytics
-- Student & Teacher management
-- Classes, Timetable, Attendance
-- Grades & Examinations
-- Fee Management
-- Library & Transport
-- Announcements & HR
-- Reports & Advanced Reports
-- Settings
+**Navigate Between Website and Portal:**
+- From Portal → Website: Click "Back to Website" in sidebar
+- From Website → Portal: Click "Portal Login" in navbar
 
 ## 📁 Environment Files
 

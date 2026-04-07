@@ -116,6 +116,13 @@ export default function Layout() {
               </p>
               <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
+            <Link
+              to="/"
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition mb-2"
+            >
+              <School className="w-5 h-5" />
+              <span className="font-medium">Back to Website</span>
+            </Link>
             <button
               onClick={handleSignOut}
               className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-lg transition"

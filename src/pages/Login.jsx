@@ -19,7 +19,7 @@ export default function Login() {
     try {
       const { error } = await signIn(email, password)
       if (error) throw error
-      navigate('/')
+      navigate('/portal')
     } catch (error) {
       setError(error.message)
     } finally {
@@ -90,8 +90,14 @@ export default function Login() {
 
           <p className="text-center text-gray-600 mt-6">
             Don't have an account?{' '}
-            <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+            <Link to="/portal/register" className="text-primary-600 hover:text-primary-700 font-medium">
               Sign up
+            </Link>
+          </p>
+          
+          <p className="text-center text-gray-500 mt-4 text-sm">
+            <Link to="/" className="text-primary-600 hover:text-primary-700 font-medium">
+              ← Back to Website
             </Link>
           </p>
         </div>

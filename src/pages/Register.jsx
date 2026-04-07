@@ -34,7 +34,7 @@ export default function Register() {
         role: role,
       })
       if (error) throw error
-      navigate('/login')
+      navigate('/portal/login')
     } catch (error) {
       setError(error.message)
     } finally {
@@ -152,8 +152,14 @@ export default function Register() {
 
           <p className="text-center text-gray-600 mt-6">
             Already have an account?{' '}
-            <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+            <Link to="/portal/login" className="text-primary-600 hover:text-primary-700 font-medium">
               Sign in
+            </Link>
+          </p>
+          
+          <p className="text-center text-gray-500 mt-4 text-sm">
+            <Link to="/" className="text-primary-600 hover:text-primary-700 font-medium">
+              ← Back to Website
             </Link>
           </p>
         </div>
