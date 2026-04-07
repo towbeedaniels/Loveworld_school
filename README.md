@@ -246,44 +246,148 @@ school-management-system/
 - Node.js 16+ and npm
 - A Supabase account and project ([supabase.com](https://supabase.com))
 
-## Setup Instructions
+## 🚀 Setup Instructions
 
-### 1. Clone and Install Dependencies
+### Prerequisites
+
+- Node.js 16+ and npm
+- A Supabase account ([supabase.com](https://supabase.com))
+- A Supabase project created
+
+### Step 1: Clone and Install Dependencies
 
 ```bash
+cd school-management-system
 npm install
 ```
 
-### 2. Set Up Supabase
+### Step 2: Set Up Supabase Database
 
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to the SQL Editor in your Supabase dashboard
-3. Run the SQL script from `database/schema.sql` to create all tables and policies
+#### 2.1 Create Supabase Project
+1. Go to [supabase.com](https://supabase.com)
+2. Click **"New Project"**
+3. Choose your organization
+4. Set project name and database password
+5. Wait for project creation (~2 minutes)
 
-### 3. Configure Environment Variables
+#### 2.2 Get Your Credentials
+1. Open your project dashboard
+2. Go to **Settings** → **API**
+3. Copy these two values:
+   - **Project URL** (looks like: `https://xxxxx.supabase.co`)
+   - **anon/public key** (long string starting with `eyJ...`)
 
-1. Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
+#### 2.3 Configure Environment Variables
+```bash
+# Create .env.local file with your credentials
+cp .env.example .env.local
 
-2. Get your Supabase credentials from your project settings:
-   - Go to Project Settings > API
-   - Copy your Project URL and anon/public key
-   
-3. Update `.env` with your credentials:
-   ```env
-   VITE_SUPABASE_URL=your_supabase_project_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
+# Edit .env.local and replace with your actual values:
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your_anon_key_here
+```
 
-### 4. Start the Development Server
+**⚠️ Important:** 
+- Never commit `.env.local` to version control
+- `.env.example` contains placeholders only
+- Your `.env.local` is gitignored automatically
+
+#### 2.4 Create Database Tables
+1. Go to **SQL Editor** in your Supabase dashboard
+2. Click **"New Query"**
+3. Open the file `database/schema.sql` from this project
+4. Copy **entire content** (534 lines)
+5. Paste into SQL Editor
+6. Click **"Run"** (or press Ctrl/Cmd + Enter)
+7. Wait for success message (~5-10 seconds)
+8. You should see: `Success. No rows returned`
+
+#### 2.5 Verify Database Setup
+Run this query in SQL Editor to verify all 21 tables were created:
+```sql
+SELECT table_name 
+FROM information_schema.tables 
+WHERE table_schema = 'public' 
+ORDER BY table_name;
+```
+
+**Expected Tables (21 total):**
+1. `announcements` - School communications
+2. `attendance` - Student attendance
+3. `book_issuance` - Book issue/return records
+4. `books` - Library catalog
+5. `class_subjects` - Class-Subject relationships
+6. `classes` - Class/Section info
+7. `enrollments` - Student enrollments
+8. `examinations` - Exam definitions
+9. `fee_payments` - Payment records
+10. `fee_structures` - Fee definitions
+11. `grades` - Student grades
+12. `parents` - Parent/Guardian info
+13. `profiles` - User profiles
+14. `routes` - Transport routes
+15. `student_transport` - Student transport assignments
+16. `students` - Student records
+17. `subjects` - Subject catalog
+18. `teacher_attendance` - Teacher attendance
+19. `teachers` - Teacher records
+20. `timetable` - Class schedules
+21. `vehicles` - Transport vehicles
+
+### Step 3: Start Development Server
 
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`
+The application will open automatically at `http://localhost:5173`
+
+### Step 4: Create Your First Account
+
+1. Click **"Sign up"** on the login page
+2. Fill in:
+   - Full Name
+   - Email address
+   - Password (min 6 characters)
+   - Role (Admin recommended for first user)
+3. Click **"Sign Up"**
+4. You'll be redirected to login
+5. Sign in with your credentials
+
+### Step 5: Explore the System
+
+You now have access to all 19 modules:
+- Dashboard with analytics
+- Student & Teacher management
+- Classes, Timetable, Attendance
+- Grades & Examinations
+- Fee Management
+- Library & Transport
+- Announcements & HR
+- Reports & Advanced Reports
+- Settings
+
+## 📁 Environment Files
+
+### `.env.example` (Committed to Git)
+```env
+VITE_SUPABASE_URL=your_supabase_project_url_here
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+```
+
+### `.env.local` (NOT committed - Git ignored)
+```env
+VITE_SUPABASE_URL=https://your-actual-project.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGc...your_actual_key
+```
+
+## 🔧 Available Scripts
+
+```bash
+npm run dev      # Start development server (http://localhost:5173)
+npm run build    # Build for production
+npm run preview  # Preview production build
+```
 
 ## Project Structure
 
