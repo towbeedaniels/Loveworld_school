@@ -3,6 +3,16 @@ import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
+import Students from './pages/Students'
+import Teachers from './pages/Teachers'
+import Classes from './pages/Classes'
+import Attendance from './pages/Attendance'
+import Grades from './pages/Grades'
+import Fees from './pages/Fees'
+import Library from './pages/Library'
+import Transport from './pages/Transport'
+import Reports from './pages/Reports'
+import Settings from './pages/Settings'
 import Layout from './components/Layout'
 
 function PrivateRoute({ children }) {
@@ -31,16 +41,16 @@ function App() {
             }
           >
             <Route index element={<Dashboard />} />
-            <Route path="students" element={<div>Students Page</div>} />
-            <Route path="teachers" element={<div>Teachers Page</div>} />
-            <Route path="classes" element={<div>Classes Page</div>} />
-            <Route path="attendance" element={<div>Attendance Page</div>} />
-            <Route path="grades" element={<div>Grades Page</div>} />
-            <Route path="fees" element={<div>Fees Page</div>} />
-            <Route path="library" element={<div>Library Page</div>} />
-            <Route path="transport" element={<div>Transport Page</div>} />
-            <Route path="reports" element={<div>Reports Page</div>} />
-            <Route path="settings" element={<div>Settings Page</div>} />
+            <Route path="students" element={<Students />} />
+            <Route path="teachers" element={<Teachers />} />
+            <Route path="classes" element={<Classes />} />
+            <Route path="attendance" element={<Attendance />} />
+            <Route path="grades" element={<Grades />} />
+            <Route path="fees" element={<Fees />} />
+            <Route path="library" element={<Library />} />
+            <Route path="transport" element={<Transport />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </AuthProvider>
