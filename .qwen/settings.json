@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(npm create *)",
-      "Bash(npm install)"
+      "Bash(npm install)",
+      "Bash(timeout *)",
+      "Bash(true)",
+      "Bash(gtimeout *)"
     ]
   },
   "$version": 3
