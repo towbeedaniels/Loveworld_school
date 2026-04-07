@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTeachers } from '../hooks/useTeachers'
+import ExportImport from '../components/ExportImport'
 import {
   Plus,
   Search,

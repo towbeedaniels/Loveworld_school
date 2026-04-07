@@ -15,6 +15,7 @@ import {
   Megaphone,
   UserCog,
   FileText,
+  TrendingUp,
   Settings,
   LogOut,
   Menu,
@@ -36,6 +37,7 @@ const navigation = [
   { name: 'Announcements', href: '/announcements', icon: Megaphone },
   { name: 'HR', href: '/hr', icon: UserCog },
   { name: 'Reports', href: '/reports', icon: FileText },
+  { name: 'Advanced Reports', href: '/advanced-reports', icon: TrendingUp },
   { name: 'Settings', href: '/settings', icon: Settings },
 ]
 

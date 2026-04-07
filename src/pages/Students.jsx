@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStudents } from '../hooks/useStudents'
+import ExportImport from '../components/ExportImport'
 import {
   Plus,
   Search,
@@ -111,6 +112,24 @@ export default function Students() {
     })
   }
 
+  const transformFn = (students) => {
+    return students.map(s => ({
+      'Student ID': s.student_number,
+      'First Name': s.first_name,
+      'Last Name': s.last_name,
+      'Gender': s.gender,
+      'Date of Birth': s.date_of_birth,
+      'Blood Group': s.blood_group,
+      'Email': s.email,
+      'Phone': s.phone,
+      'Address': s.address,
+      'City': s.city,
+      'State': s.state,
+      'Status': s.status,
+      'Admission Date': s.admission_date,
+    }))
+  }
+
   return (
     <div>
       {/* Header */}
@@ -180,13 +199,24 @@ export default function Students() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus className="w-5 h-5" />
-            Add Student
-          </button>
+          <div className="flex gap-2">
+            <ExportImport
+              data={students}
+              filename="students"
+              transformFn={transformFn}
+              onImport={(importedData) => {
+                console.log('Imported:', importedData)
+                // Handle import logic here
+              }}
+            />
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Plus className="w-5 h-5" />
+              Add Student
+            </button>
+          </div>
         </div>
       </div>
 

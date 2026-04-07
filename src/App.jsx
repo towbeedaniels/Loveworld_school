@@ -6,15 +6,16 @@ import Dashboard from './pages/Dashboard'
 import Students from './pages/Students'
 import Teachers from './pages/Teachers'
 import Classes from './pages/Classes'
+import Timetable from './pages/Timetable'
 import Attendance from './pages/Attendance'
 import Grades from './pages/Grades'
 import Fees from './pages/Fees'
 import Library from './pages/Library'
 import Transport from './pages/Transport'
-import Timetable from './pages/Timetable'
 import Announcements from './pages/Announcements'
 import HR from './pages/HR'
 import Reports from './pages/Reports'
+import AdvancedReports from './pages/AdvancedReports'
 import Settings from './pages/Settings'
 import Layout from './components/Layout'
 
@@ -56,6 +57,7 @@ function App() {
             <Route path="announcements" element={<Announcements />} />
             <Route path="hr" element={<HR />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="advanced-reports" element={<AdvancedReports />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
