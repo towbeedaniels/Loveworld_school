@@ -34,7 +34,11 @@ const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
 
 export default function AdvancedReports() {
   const [activeReport, setActiveReport] = useState('attendance')
-  const [dateRange, setDateRange] = useState({ start: '', end: '' })
+  const currentDate = new Date()
+  const [dateRange, setDateRange] = useState({
+    start: `${currentDate.getFullYear()}-01-01`,
+    end: `${currentDate.getFullYear()}-12-31`,
+  })
   const [loading, setLoading] = useState(true)
   const [reportData, setReportData] = useState(null)
 
@@ -46,7 +50,7 @@ export default function AdvancedReports() {
     setLoading(true)
     try {
       let data = {}
-      
+
       switch (activeReport) {
         case 'attendance':
           data = await fetchAttendanceReport()
@@ -66,28 +70,39 @@ export default function AdvancedReports() {
         default:
           data = {}
       }
-      
-      setReportData(data)
+
+      if (data === null) {
+        console.error(`Failed to fetch ${activeReport} report data`)
+        setReportData(null)
+      } else {
+        setReportData(data)
+      }
     } catch (error) {
       console.error('Error fetching report:', error)
+      setReportData(null)
     } finally {
       setLoading(false)
     }
   }
 
   const fetchAttendanceReport = async () => {
-    const { data: attendance } = await supabase
+    const { data: attendance, error } = await supabase
       .from('attendance')
       .select('status, date, students (first_name, last_name)')
-      .gte('date', dateRange.start || '2024-01-01')
-      .lte('date', dateRange.end || '2024-12-31')
+      .gte('date', dateRange.start)
+      .lte('date', dateRange.end)
+
+    if (error) {
+      console.error('Error fetching attendance:', error)
+      return null
+    }
 
     const byStatus = {}
     const byMonth = {}
-    
+
     attendance?.forEach(record => {
       byStatus[record.status] = (byStatus[record.status] || 0) + 1
-      
+
       const month = new Date(record.date).toLocaleString('default', { month: 'short' })
       if (!byMonth[month]) {
         byMonth[month] = { month, present: 0, absent: 0, late: 0 }
@@ -118,23 +133,28 @@ export default function AdvancedReports() {
   }
 
   const fetchGradesReport = async () => {
-    const { data: grades } = await supabase
+    const { data: grades, error } = await supabase
       .from('grades')
       .select(`
         marks_obtained,
         grade,
         students (first_name, last_name),
-        examinations (name, type, max_marks)
+        examinations (name, type, max_marks, subjects (name))
       `)
+
+    if (error) {
+      console.error('Error fetching grades:', error)
+      return null
+    }
 
     const gradeDistribution = {}
     const byType = {}
     const bySubject = {}
-    
+
     grades?.forEach(record => {
       const grade = record.grade || 'Unknown'
       gradeDistribution[grade] = (gradeDistribution[grade] || 0) + 1
-      
+
       const type = record.examinations?.type || 'Unknown'
       if (!byType[type]) {
         byType[type] = { type, count: 0, total: 0, max: 0 }
@@ -173,23 +193,28 @@ export default function AdvancedReports() {
   }
 
   const fetchFeesReport = async () => {
-    const { data: payments } = await supabase
+    const { data: payments, error } = await supabase
       .from('fee_payments')
       .select('amount_paid, status, payment_date, payment_method, students (first_name, last_name)')
-      .gte('payment_date', dateRange.start || '2024-01-01')
-      .lte('payment_date', dateRange.end || '2024-12-31')
+      .gte('payment_date', dateRange.start)
+      .lte('payment_date', dateRange.end)
+
+    if (error) {
+      console.error('Error fetching fees:', error)
+      return null
+    }
 
     const byStatus = {}
     const byMethod = {}
     const byMonth = {}
-    
+
     payments?.forEach(record => {
       byStatus[record.status] = (byStatus[record.status] || 0) + 1
       byStatus[`${record.status}_amount`] = (byStatus[`${record.status}_amount`] || 0) + parseFloat(record.amount_paid || 0)
-      
+
       const method = record.payment_method || 'unknown'
       byMethod[method] = (byMethod[method] || 0) + parseFloat(record.amount_paid || 0)
-      
+
       const month = new Date(record.payment_date).toLocaleString('default', { month: 'short' })
       byMonth[month] = (byMonth[month] || 0) + parseFloat(record.amount_paid || 0)
     })
@@ -218,13 +243,22 @@ export default function AdvancedReports() {
   }
 
   const fetchLibraryReport = async () => {
-    const { data: books } = await supabase
+    const { data: books, error: booksError } = await supabase
       .from('books')
       .select('category, total_copies, available_copies')
-    
-    const { data: issuances } = await supabase
+
+    if (booksError) {
+      console.error('Error fetching books:', booksError)
+      return null
+    }
+
+    const { data: issuances, error: issuanceError } = await supabase
       .from('book_issuance')
       .select('status, issue_date')
+
+    if (issuanceError) {
+      console.error('Error fetching issuances:', issuanceError)
+    }
 
     const byCategory = {}
     books?.forEach(book => {
@@ -258,13 +292,22 @@ export default function AdvancedReports() {
   }
 
   const fetchPerformanceReport = async () => {
-    const { data: students } = await supabase
+    const { data: students, error: studentsError } = await supabase
       .from('students')
       .select('status, admission_date')
-    
-    const { data: grades } = await supabase
+
+    if (studentsError) {
+      console.error('Error fetching students:', studentsError)
+      return null
+    }
+
+    const { data: grades, error: gradesError } = await supabase
       .from('grades')
       .select('marks_obtained, grade, student_id')
+
+    if (gradesError) {
+      console.error('Error fetching grades for performance:', gradesError)
+    }
 
     const studentGrades = {}
     grades?.forEach(g => {
@@ -407,7 +450,14 @@ export default function AdvancedReports() {
         </div>
       ) : !reportData ? (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-          <p className="text-gray-500">No data available for this report</p>
+          <p className="text-gray-500 text-lg mb-2">No data available for this report</p>
+          <p className="text-sm text-gray-400">
+            {activeReport === 'attendance' && 'Start by marking student attendance in the Attendance section'}
+            {activeReport === 'grades' && 'Add examinations and enter student grades in the Grades section'}
+            {activeReport === 'fees' && 'Create fee structures and record payments in the Fees section'}
+            {activeReport === 'library' && 'Add books and manage issuances in the Library section'}
+            {activeReport === 'performance' && 'Enter student grades to see performance analytics'}
+          </p>
         </div>
       ) : (
         <>
@@ -424,6 +474,15 @@ export default function AdvancedReports() {
 
 // Attendance Report Component
 function AttendanceReport({ data }) {
+  if (!data || data.total === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <p className="text-gray-500 text-lg">No attendance records found for this period</p>
+        <p className="text-sm text-gray-400 mt-2">Try adjusting the date range or add attendance records</p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Stats */}
@@ -468,6 +527,15 @@ function AttendanceReport({ data }) {
 
 // Grades Report Component
 function GradesReport({ data }) {
+  if (!data || data.totalGrades === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <p className="text-gray-500 text-lg">No grade records found</p>
+        <p className="text-sm text-gray-400 mt-2">Add examinations and enter student grades</p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Stats */}
@@ -530,6 +598,15 @@ function GradesReport({ data }) {
 
 // Fees Report Component
 function FeesReport({ data }) {
+  if (!data || data.totalPayments === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <p className="text-gray-500 text-lg">No payment records found for this period</p>
+        <p className="text-sm text-gray-400 mt-2">Create fee structures and record payments</p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Stats */}
@@ -584,6 +661,15 @@ function FeesReport({ data }) {
 
 // Library Report Component
 function LibraryReport({ data }) {
+  if (!data || data.totalBooks === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <p className="text-gray-500 text-lg">No books found in the library</p>
+        <p className="text-sm text-gray-400 mt-2">Add books to the library to see analytics</p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Stats */}
@@ -652,6 +738,15 @@ function LibraryReport({ data }) {
 
 // Performance Report Component
 function PerformanceReport({ data }) {
+  if (!data || data.gradedStudents === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <p className="text-gray-500 text-lg">No student performance data available</p>
+        <p className="text-sm text-gray-400 mt-2">Enter student grades to see performance analytics</p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Stats */}

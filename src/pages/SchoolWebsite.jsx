@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import {
   Menu,
   X,
@@ -29,6 +30,32 @@ import {
 export default function SchoolWebsite() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+  const [announcements, setAnnouncements] = useState([])
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true)
+
+  useEffect(() => {
+    fetchAnnouncements()
+  }, [])
+
+  const fetchAnnouncements = async () => {
+    try {
+      setLoadingAnnouncements(true)
+      const { data, error } = await supabase
+        .from('announcements')
+        .select('*')
+        .eq('is_active', true)
+        .gte('expiry_date', new Date().toISOString())
+        .order('publish_date', { ascending: false })
+        .limit(6)
+
+      if (error) throw error
+      setAnnouncements(data || [])
+    } catch (error) {
+      console.error('Error fetching announcements:', error)
+    } finally {
+      setLoadingAnnouncements(false)
+    }
+  }
 
   const scrollToSection = (sectionId) => {
     setActiveSection(sectionId)
@@ -459,53 +486,53 @@ export default function SchoolWebsite() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                date: 'Apr 15, 2024',
-                category: 'Event',
-                title: 'Annual Sports Day Celebration',
-                excerpt: 'Join us for a day of athletic competitions, team spirit, and fun activities for all grades.',
-                image: '🏃',
-              },
-              {
-                date: 'Apr 20, 2024',
-                category: 'News',
-                title: 'Science Fair Winners Announced',
-                excerpt: 'Congratulations to our students who won top prizes at the Regional Science Fair 2024.',
-                image: '🔬',
-              },
-              {
-                date: 'May 5, 2024',
-                category: 'Event',
-                title: 'Parent-Teacher Conference',
-                excerpt: 'Schedule your meeting to discuss your child\'s progress and upcoming academic goals.',
-                image: '👨‍👩‍👧',
-              },
-            ].map((news, idx) => (
-              <div key={idx} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
-                <div className="bg-gradient-to-br from-primary-100 to-primary-200 p-12 text-center">
-                  <div className="text-6xl">{news.image}</div>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-sm text-gray-500 flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {news.date}
-                    </span>
-                    <span className="px-3 py-1 bg-primary-100 text-primary-700 text-xs font-medium rounded-full">
-                      {news.category}
-                    </span>
+          {loadingAnnouncements ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">Loading announcements...</p>
+            </div>
+          ) : announcements.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No announcements available at this time.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {announcements.map((announcement, idx) => {
+                const icons = ['📢', '🎉', '📚', '🏆', '🎓', '📅']
+                const priorityColors = {
+                  low: 'from-blue-100 to-blue-200',
+                  normal: 'from-primary-100 to-primary-200',
+                  high: 'from-orange-100 to-orange-200',
+                  urgent: 'from-red-100 to-red-200',
+                }
+
+                return (
+                  <div key={announcement.id || idx} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                    <div className={`bg-gradient-to-br ${priorityColors[announcement.priority] || priorityColors.normal} p-12 text-center`}>
+                      <div className="text-6xl">{icons[idx % icons.length]}</div>
+                    </div>
+                    <div className="p-6">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-sm text-gray-500 flex items-center gap-1">
+                          <Calendar className="w-4 h-4" />
+                          {new Date(announcement.publish_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
+                        <span className={`px-3 py-1 text-xs font-medium rounded-full capitalize ${
+                          announcement.priority === 'urgent' ? 'bg-red-100 text-red-700' :
+                          announcement.priority === 'high' ? 'bg-orange-100 text-orange-700' :
+                          announcement.priority === 'normal' ? 'bg-blue-100 text-blue-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>
+                          {announcement.priority}
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">{announcement.title}</h3>
+                      <p className="text-gray-600 mb-4 line-clamp-3">{announcement.content}</p>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{news.title}</h3>
-                  <p className="text-gray-600 mb-4">{news.excerpt}</p>
-                  <button className="text-primary-600 font-medium flex items-center gap-2 hover:gap-3 transition">
-                    Read More <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       </section>
 
