@@ -83,13 +83,29 @@ function ClassesTab() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
+    const submissionData = {
+      ...formData,
+      capacity: formData.capacity ? parseInt(formData.capacity) : null,
+      teacher_id: formData.teacher_id || null,
+    }
+
     if (editingClass) {
-      const { error } = await updateClass(editingClass.id, formData)
-      if (!error) resetForm()
+      const { error } = await updateClass(editingClass.id, submissionData)
+      if (error) {
+        console.error('Error updating class:', error)
+        alert(`Error updating class: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
-      const { error } = await addClass(formData)
-      if (!error) resetForm()
+      const { error } = await addClass(submissionData)
+      if (error) {
+        console.error('Error adding class:', error)
+        alert(`Error adding class: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 
@@ -362,13 +378,23 @@ function SubjectsTab() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (editingSubject) {
       const { error } = await updateSubject(editingSubject.id, formData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error updating subject:', error)
+        alert(`Error updating subject: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
       const { error } = await addSubject(formData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error adding subject:', error)
+        alert(`Error adding subject: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 

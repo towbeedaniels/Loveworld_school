@@ -37,7 +37,7 @@ export default function Settings() {
 
   // System settings state
   const [systemSettings, setSystemSettings] = useState({
-    school_name: 'Loveworl School',
+    school_name: 'Loveworld School',
     academic_year: '2024-2025',
     timezone: 'Africa/Lagos',
   })

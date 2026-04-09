@@ -79,7 +79,7 @@ export default function SchoolWebsite() {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                <span>info@loveworlschool.edu</span>
+                <span>info@loveworldschool.edu</span>
               </div>
             </div>
             <div className="hidden md:flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function SchoolWebsite() {
                 <School className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Loveworl School</h1>
+                <h1 className="text-2xl font-bold text-gray-900">Loveworld School</h1>
                 <p className="text-xs text-gray-500">Excellence in Education</p>
               </div>
             </div>
@@ -203,7 +203,7 @@ export default function SchoolWebsite() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Welcome to Loveworl School
+              Welcome to Loveworld School
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-primary-100 max-w-3xl mx-auto">
               Nurturing minds, building character, and shaping the leaders of tomorrow through excellence in education
@@ -251,7 +251,7 @@ export default function SchoolWebsite() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Loveworl School?</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Loveworld School?</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We provide a comprehensive educational experience that prepares students for success
             </p>
@@ -318,7 +318,7 @@ export default function SchoolWebsite() {
             <div>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">About Our School</h2>
               <p className="text-lg text-gray-600 mb-6">
-                Founded in 1998, Loveworl School has been a beacon of educational excellence for over 25 years. 
+                Founded in 1998, Loveworld School has been a beacon of educational excellence for over 25 years. 
                 We believe in nurturing not just academic brilliance, but also character, creativity, and compassion.
               </p>
               <p className="text-lg text-gray-600 mb-8">
@@ -460,7 +460,7 @@ export default function SchoolWebsite() {
           </div>
 
           <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-12 text-white text-center">
-            <h3 className="text-3xl font-bold mb-4">Ready to Join Loveworl School?</h3>
+            <h3 className="text-3xl font-bold mb-4">Ready to Join Loveworld School?</h3>
             <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
               Applications are now open for the 2024-2025 academic year. Don't miss out!
             </p>
@@ -549,7 +549,7 @@ export default function SchoolWebsite() {
               {
                 name: 'Sarah Johnson',
                 role: 'Parent of Grade 5 Student',
-                content: 'Loveworl School has transformed my child\'s approach to learning. The teachers are incredibly dedicated.',
+                content: 'Loveworld School has transformed my child\'s approach to learning. The teachers are incredibly dedicated.',
                 rating: 5,
               },
               {
@@ -621,8 +621,8 @@ export default function SchoolWebsite() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-                    <p className="text-gray-600">info@loveworlschool.edu</p>
-                    <p className="text-gray-600">admissions@loveworlschool.edu</p>
+                    <p className="text-gray-600">info@loveworldschool.edu</p>
+                    <p className="text-gray-600">admissions@loveworldschool.edu</p>
                   </div>
                 </div>
               </div>
@@ -694,7 +694,7 @@ export default function SchoolWebsite() {
                   <School className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">Loveworl School</h3>
+                  <h3 className="text-xl font-bold">Loveworld School</h3>
                   <p className="text-xs text-gray-400">Excellence in Education</p>
                 </div>
               </div>
@@ -769,7 +769,7 @@ export default function SchoolWebsite() {
           <div className="border-t border-gray-800 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-gray-400 text-sm">
-                © 2024 Loveworl School. All rights reserved.
+                © 2024 Loveworld School. All rights reserved.
               </p>
               <div className="flex gap-6 text-sm text-gray-400">
                 <button className="hover:text-white transition">Privacy Policy</button>

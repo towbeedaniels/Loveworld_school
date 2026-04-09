@@ -1,6 +1,10 @@
-# School Management System
+# Loveworld School Management System
 
 A comprehensive school management system built with React, Vite, Tailwind CSS, and Supabase.
+
+**School Name**: Loveworld School  
+**Version**: 1.0.0  
+**Last Updated**: April 2026
 
 ## ✨ Features
 
@@ -19,6 +23,8 @@ A comprehensive school management system built with React, Vite, Tailwind CSS, a
 
 ### 👨‍🎓 Student Management
 - Full CRUD operations for student records
+- **Advanced error handling** with detailed error messages
+- **Data type validation** for dates and optional fields
 - Advanced search and pagination
 - Status tracking (Active, Inactive, Graduated, Transferred)
 - **Export/Import** - CSV and Excel file support
@@ -26,6 +32,8 @@ A comprehensive school management system built with React, Vite, Tailwind CSS, a
 
 ### 👨‍🏫 Teacher Management
 - Complete teacher records management
+- **Robust error handling** for form submissions
+- **Automatic date formatting** and validation
 - Qualification and specialization tracking
 - Experience years monitoring
 - **Export/Import** capabilities
@@ -33,9 +41,11 @@ A comprehensive school management system built with React, Vite, Tailwind CSS, a
 
 ### 📚 Classes & Subjects
 - Class and section management
+- **Integer validation** for capacity fields
 - Subject catalog with codes
 - Teacher-class assignments
 - Grade level tracking
+- **Comprehensive error feedback** for all operations
 
 ### 📅 Timetable Management
 - Weekly timetable grid (Monday-Saturday)
@@ -43,10 +53,12 @@ A comprehensive school management system built with React, Vite, Tailwind CSS, a
 - Subject, teacher, and room assignment
 - Time slot management
 - Visual timetable cards
+- **Enhanced error reporting** for schedule conflicts
 
 ### ✅ Attendance Tracking
 - **Student Attendance**
   - Individual and bulk attendance marking
+  - **Detailed error messages** for duplicate entries
   - Date-based filtering
   - Status tracking: Present, Absent, Late, Excused
 - **Teacher Attendance** (Ready for implementation)
@@ -55,22 +67,27 @@ A comprehensive school management system built with React, Vite, Tailwind CSS, a
 ### 📝 Grades & Examinations
 - **Examination Management**
   - Create exams, quizzes, assignments, projects
+  - **Proper number parsing** for max_marks and weightage
   - Track max marks, weightage, dates
   - Class and subject association
+  - **Detailed validation errors** for required fields
 - **Grade Management**
   - Record student grades
   - **Auto-grade calculation** based on percentage
   - Custom grading scales support
   - Track highest/lowest/average scores
+  - **Float parsing** for marks_obtained
 
 ### 💰 Fee Management
 - **Fee Structures**
   - Define fee types (Tuition, Transport, etc.)
   - Set frequency: Monthly, Quarterly, Annually, One-time
+  - **Amount validation** with parseFloat
   - Class-specific fees
   - Due date tracking
 - **Payment Tracking**
   - Record payments with multiple methods
+  - **Payment amount validation**
   - Status tracking: Pending, Paid, Partial, Overdue
   - Receipt number generation
   - Revenue statistics
@@ -78,25 +95,30 @@ A comprehensive school management system built with React, Vite, Tailwind CSS, a
 ### 📖 Library Management
 - **Book Management**
   - Complete book catalog with ISBN, category, publisher
+  - **Integer validation** for publication year and copies
   - Track total and available copies
   - Location tracking (shelf/location)
 - **Book Issuance System**
   - Issue/return books to students
   - Due date and fine calculation
   - Status tracking: Issued, Returned, Overdue
+  - **Error handling** for availability checks
 
 ### 🚌 Transport Management
 - **Vehicle Management**
   - Full CRUD for vehicles (Bus, Van, Car)
+  - **Capacity validation** with parseInt
   - Track vehicle number, capacity, driver info
   - Status tracking: Active, Maintenance, Inactive
 - **Route Management**
   - Create and manage transport routes
+  - **Distance validation** with parseFloat
   - Assign vehicles to routes
   - Pickup points tracking
 - **Student Transport Assignment**
   - Assign students to routes
   - Track pickup points per student
+  - **Comprehensive error feedback**
 
 ### 📢 Announcements & Communication
 - Create and manage school-wide announcements
@@ -104,14 +126,25 @@ A comprehensive school management system built with React, Vite, Tailwind CSS, a
 - Target audience selection (All, Students, Teachers, Parents, Staff)
 - Publish and expiry date tracking
 - Rich content editor
+- **Array validation** for target audience
 
 ### 👥 HR & Payroll
 - **Employee Management**
   - Employee records with departments
+  - **Salary validation** with parseFloat
   - Role and salary tracking
   - Status management (Active, On Leave)
-- **Payroll Tab** (Ready for Supabase connection)
-- **Leave Management Tab** (Ready for Supabase connection)
+  - **Detailed error logging** for debugging
+- **Payroll Management**
+  - Monthly payroll processing
+  - **Gross/net salary calculations**
+  - Deductions tracking
+  - **Comprehensive error handling**
+- **Leave Management**
+  - Leave request submission and approval
+  - **Total days validation**
+  - Status tracking
+  - **Error reporting** for conflicts
 
 ### 📈 Reports & Analytics
 - **Overview Dashboard**

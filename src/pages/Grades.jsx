@@ -101,12 +101,33 @@ function ExaminationsTab() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    // Convert string values to proper types
+    const submissionData = {
+      ...formData,
+      class_id: formData.class_id || null,
+      subject_id: formData.subject_id || null,
+      max_marks: parseInt(formData.max_marks),
+      weightage: formData.weightage ? parseFloat(formData.weightage) : null,
+      exam_date: formData.exam_date || null,
+      academic_year: formData.academic_year || null,
+    }
+
     if (editingExam) {
-      const { error } = await updateExamination(editingExam.id, formData)
-      if (!error) resetForm()
+      const { error } = await updateExamination(editingExam.id, submissionData)
+      if (error) {
+        console.error('Error updating examination:', error)
+        alert(`Error updating examination: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
-      const { error } = await addExamination(formData)
-      if (!error) resetForm()
+      const { error } = await addExamination(submissionData)
+      if (error) {
+        console.error('Error adding examination:', error)
+        alert(`Error adding examination: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 
@@ -517,15 +538,29 @@ function GradesTab() {
 
     const gradeData = {
       ...formData,
+      student_id: formData.student_id,
+      examination_id: formData.examination_id,
+      marks_obtained: parseFloat(formData.marks_obtained),
       grade: formData.grade || gradeLetter,
+      remarks: formData.remarks || null,
     }
 
     if (editingGrade) {
       const { error } = await updateGrade(editingGrade.id, gradeData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error updating grade:', error)
+        alert(`Error updating grade: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
       const { error } = await addGrade(gradeData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error adding grade:', error)
+        alert(`Error adding grade: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 

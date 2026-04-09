@@ -48,10 +48,20 @@ export default function Timetable() {
 
     if (editingEntry) {
       const { error } = await updateEntry(editingEntry.id, formData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error updating timetable entry:', error)
+        alert(`Error updating timetable entry: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
       const { error } = await addEntry(formData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error adding timetable entry:', error)
+        alert(`Error adding timetable entry: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 

@@ -96,12 +96,29 @@ function FeeStructuresTab() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    const submissionData = {
+      ...formData,
+      amount: parseFloat(formData.amount),
+      class_id: formData.class_id || null,
+      due_date: formData.due_date || null,
+    }
+
     if (editingStructure) {
-      const { error } = await updateFeeStructure(editingStructure.id, formData)
-      if (!error) resetForm()
+      const { error } = await updateFeeStructure(editingStructure.id, submissionData)
+      if (error) {
+        console.error('Error updating fee structure:', error)
+        alert(`Error updating fee structure: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
-      const { error } = await addFeeStructure(formData)
-      if (!error) resetForm()
+      const { error } = await addFeeStructure(submissionData)
+      if (error) {
+        console.error('Error adding fee structure:', error)
+        alert(`Error adding fee structure: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 
@@ -457,12 +474,29 @@ function PaymentsTab() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    const submissionData = {
+      ...formData,
+      amount_paid: parseFloat(formData.amount_paid),
+      due_date: formData.due_date || null,
+      payment_date: formData.payment_date || new Date().toISOString().split('T')[0],
+    }
+
     if (editingPayment) {
-      const { error } = await updatePayment(editingPayment.id, formData)
-      if (!error) resetForm()
+      const { error } = await updatePayment(editingPayment.id, submissionData)
+      if (error) {
+        console.error('Error updating payment:', error)
+        alert(`Error updating payment: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
-      const { error } = await addPayment(formData)
-      if (!error) resetForm()
+      const { error } = await addPayment(submissionData)
+      if (error) {
+        console.error('Error adding payment:', error)
+        alert(`Error adding payment: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 

@@ -56,10 +56,20 @@ export default function Announcements() {
 
     if (editingAnnouncement) {
       const { error } = await updateAnnouncement(editingAnnouncement.id, announcementData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error updating announcement:', error)
+        alert(`Error updating announcement: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
       const { error } = await addAnnouncement(announcementData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error adding announcement:', error)
+        alert(`Error adding announcement: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 

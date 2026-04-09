@@ -125,7 +125,7 @@ function EmployeesTab({ searchTerm, setSearchTerm }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     const dataToSubmit = {
       ...formData,
       basic_salary: parseFloat(formData.basic_salary) || 0,
@@ -140,7 +140,8 @@ function EmployeesTab({ searchTerm, setSearchTerm }) {
     }
 
     if (result.error) {
-      alert('Error: ' + result.error)
+      console.error('Error saving employee:', result.error)
+      alert(`Error saving employee: ${result.error}`)
     } else {
       resetForm()
     }
@@ -640,7 +641,8 @@ function PayrollTab() {
     }
 
     if (result.error) {
-      alert('Error: ' + result.error)
+      console.error('Error saving payroll record:', result.error)
+      alert(`Error saving payroll record: ${result.error}`)
     } else {
       resetForm()
     }
@@ -1048,7 +1050,8 @@ function LeaveManagementTab() {
     }
 
     if (result.error) {
-      alert('Error: ' + result.error)
+      console.error('Error saving leave request:', result.error)
+      alert(`Error saving leave request: ${result.error}`)
     } else {
       resetForm()
     }

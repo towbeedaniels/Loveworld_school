@@ -60,15 +60,27 @@ export default function Teachers() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
+    const submissionData = {
+      ...formData,
+      date_of_birth: formData.date_of_birth || null,
+      hire_date: formData.hire_date || new Date().toISOString().split('T')[0],
+    }
+
     if (editingTeacher) {
-      const { error } = await updateTeacher(editingTeacher.id, formData)
-      if (!error) {
+      const { error } = await updateTeacher(editingTeacher.id, submissionData)
+      if (error) {
+        console.error('Error updating teacher:', error)
+        alert(`Error updating teacher: ${error.message || 'Unknown error'}`)
+      } else {
         resetForm()
       }
     } else {
-      const { error } = await addTeacher(formData)
-      if (!error) {
+      const { error } = await addTeacher(submissionData)
+      if (error) {
+        console.error('Error adding teacher:', error)
+        alert(`Error adding teacher: ${error.message || 'Unknown error'}`)
+      } else {
         resetForm()
       }
     }

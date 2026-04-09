@@ -106,12 +106,29 @@ function BooksTab() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    const submissionData = {
+      ...formData,
+      publication_year: formData.publication_year ? parseInt(formData.publication_year) : null,
+      total_copies: formData.total_copies ? parseInt(formData.total_copies) : 1,
+      available_copies: formData.available_copies ? parseInt(formData.available_copies) : 1,
+    }
+
     if (editingBook) {
-      const { error } = await updateBook(editingBook.id, formData)
-      if (!error) resetForm()
+      const { error } = await updateBook(editingBook.id, submissionData)
+      if (error) {
+        console.error('Error updating book:', error)
+        alert(`Error updating book: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
-      const { error } = await addBook(formData)
-      if (!error) resetForm()
+      const { error } = await addBook(submissionData)
+      if (error) {
+        console.error('Error adding book:', error)
+        alert(`Error adding book: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 
@@ -566,7 +583,10 @@ function IssuanceTab() {
     e.preventDefault()
 
     const { error } = await issueBook(formData)
-    if (!error) {
+    if (error) {
+      console.error('Error issuing book:', error)
+      alert(`Error issuing book: ${error.message || 'Unknown error'}`)
+    } else {
       setShowModal(false)
       setFormData({
         book_id: '',

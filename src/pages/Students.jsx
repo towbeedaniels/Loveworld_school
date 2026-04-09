@@ -63,15 +63,28 @@ export default function Students() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
+    const submissionData = {
+      ...formData,
+      date_of_birth: formData.date_of_birth || null,
+      admission_date: formData.admission_date || new Date().toISOString().split('T')[0],
+      parent_guardian_id: formData.parent_guardian_id || null,
+    }
+
     if (editingStudent) {
-      const { error } = await updateStudent(editingStudent.id, formData)
-      if (!error) {
+      const { error } = await updateStudent(editingStudent.id, submissionData)
+      if (error) {
+        console.error('Error updating student:', error)
+        alert(`Error updating student: ${error.message || 'Unknown error'}`)
+      } else {
         resetForm()
       }
     } else {
-      const { error } = await addStudent(formData)
-      if (!error) {
+      const { error } = await addStudent(submissionData)
+      if (error) {
+        console.error('Error adding student:', error)
+        alert(`Error adding student: ${error.message || 'Unknown error'}`)
+      } else {
         resetForm()
       }
     }

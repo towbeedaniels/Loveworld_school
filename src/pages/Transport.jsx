@@ -113,12 +113,27 @@ function VehiclesTab() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    const submissionData = {
+      ...formData,
+      capacity: formData.capacity ? parseInt(formData.capacity) : null,
+    }
+
     if (editingVehicle) {
-      const { error } = await updateVehicle(editingVehicle.id, formData)
-      if (!error) resetForm()
+      const { error } = await updateVehicle(editingVehicle.id, submissionData)
+      if (error) {
+        console.error('Error updating vehicle:', error)
+        alert(`Error updating vehicle: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
-      const { error } = await addVehicle(formData)
-      if (!error) resetForm()
+      const { error } = await addVehicle(submissionData)
+      if (error) {
+        console.error('Error adding vehicle:', error)
+        alert(`Error adding vehicle: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 
@@ -493,14 +508,25 @@ function RoutesTab() {
       pickup_points: formData.pickup_points
         ? JSON.stringify(formData.pickup_points.split(',').map((p) => p.trim()))
         : null,
+      total_distance: formData.total_distance ? parseFloat(formData.total_distance) : null,
     }
 
     if (editingRoute) {
       const { error } = await updateRoute(editingRoute.id, routeData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error updating route:', error)
+        alert(`Error updating route: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
       const { error } = await addRoute(routeData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error adding route:', error)
+        alert(`Error adding route: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 
@@ -840,10 +866,20 @@ function StudentTransportTab() {
 
     if (editingRecord) {
       const { error } = await updateTransport(editingRecord.id, formData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error updating transport record:', error)
+        alert(`Error updating transport record: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
       const { error } = await addTransport(formData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error adding transport record:', error)
+        alert(`Error adding transport record: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 

@@ -123,10 +123,20 @@ function StudentAttendance() {
 
     if (editingRecord) {
       const { error } = await updateAttendance(editingRecord.id, formData)
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error updating attendance:', error)
+        alert(`Error updating attendance: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     } else {
       const { error } = await markAttendance([formData])
-      if (!error) resetForm()
+      if (error) {
+        console.error('Error adding attendance:', error)
+        alert(`Error adding attendance: ${error.message || 'Unknown error'}`)
+      } else {
+        resetForm()
+      }
     }
   }
 
