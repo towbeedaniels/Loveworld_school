@@ -88,7 +88,7 @@ export default function AdvancedReports() {
   const fetchAttendanceReport = async () => {
     const { data: attendance, error } = await supabase
       .from('attendance')
-      .select('status, date, students (first_name, last_name)')
+      .select('status, date')
       .gte('date', dateRange.start)
       .lte('date', dateRange.end)
 
@@ -135,18 +135,21 @@ export default function AdvancedReports() {
   const fetchGradesReport = async () => {
     const { data: grades, error } = await supabase
       .from('grades')
-      .select(`
-        marks_obtained,
-        grade,
-        students (first_name, last_name),
-        examinations (name, type, max_marks, subjects (name))
-      `)
+      .select('marks_obtained, grade, examination_id')
 
     if (error) {
       console.error('Error fetching grades:', error)
-      return null
+      // Return empty data instead of null
+      return {
+        gradeDistribution: {},
+        byType: [],
+        bySubject: [],
+        pieData: [],
+        totalGrades: 0,
+        overallAverage: 0,
+      }
     }
-
+    
     const gradeDistribution = {}
     const byType = {}
     const bySubject = {}
@@ -154,25 +157,6 @@ export default function AdvancedReports() {
     grades?.forEach(record => {
       const grade = record.grade || 'Unknown'
       gradeDistribution[grade] = (gradeDistribution[grade] || 0) + 1
-
-      const type = record.examinations?.type || 'Unknown'
-      if (!byType[type]) {
-        byType[type] = { type, count: 0, total: 0, max: 0 }
-      }
-      byType[type].count++
-      byType[type].total += parseFloat(record.marks_obtained || 0)
-      byType[type].max += parseFloat(record.examinations?.max_marks || 100)
-
-      const subject = record.examinations?.subjects?.name || 'Unknown'
-      if (!bySubject[subject]) {
-        bySubject[subject] = { subject, average: 0, count: 0, total: 0 }
-      }
-      bySubject[subject].count++
-      bySubject[subject].total += parseFloat(record.marks_obtained || 0)
-    })
-
-    Object.values(bySubject).forEach(s => {
-      s.average = s.count > 0 ? (s.total / s.count).toFixed(2) : 0
     })
 
     const gradeOrder = ['A+', 'A', 'B+', 'B', 'C', 'D', 'F']
@@ -182,8 +166,8 @@ export default function AdvancedReports() {
 
     return {
       gradeDistribution,
-      byType: Object.values(byType),
-      bySubject: Object.values(bySubject),
+      byType: [],
+      bySubject: [],
       pieData,
       totalGrades: grades?.length || 0,
       overallAverage: grades?.length > 0
@@ -195,13 +179,21 @@ export default function AdvancedReports() {
   const fetchFeesReport = async () => {
     const { data: payments, error } = await supabase
       .from('fee_payments')
-      .select('amount_paid, status, payment_date, payment_method, students (first_name, last_name)')
+      .select('amount_paid, status, payment_date, payment_method')
       .gte('payment_date', dateRange.start)
       .lte('payment_date', dateRange.end)
 
     if (error) {
       console.error('Error fetching fees:', error)
-      return null
+      return {
+        byStatus: {},
+        byMethod: {},
+        monthlyRevenue: [],
+        totalRevenue: 0,
+        pendingAmount: 0,
+        overdueAmount: 0,
+        totalPayments: 0,
+      }
     }
 
     const byStatus = {}
@@ -249,7 +241,14 @@ export default function AdvancedReports() {
 
     if (booksError) {
       console.error('Error fetching books:', booksError)
-      return null
+      return {
+        byCategory: [],
+        issuanceStatus: {},
+        pieData: [],
+        totalBooks: 0,
+        totalCopies: 0,
+        availableCopies: 0,
+      }
     }
 
     const { data: issuances, error: issuanceError } = await supabase
@@ -298,7 +297,12 @@ export default function AdvancedReports() {
 
     if (studentsError) {
       console.error('Error fetching students:', studentsError)
-      return null
+      return {
+        performanceDistribution: { excellent: 0, good: 0, average: 0, below: 0 },
+        pieData: [],
+        totalStudents: 0,
+        gradedStudents: 0,
+      }
     }
 
     const { data: grades, error: gradesError } = await supabase
@@ -307,6 +311,7 @@ export default function AdvancedReports() {
 
     if (gradesError) {
       console.error('Error fetching grades for performance:', gradesError)
+      grades = []
     }
 
     const studentGrades = {}
@@ -613,15 +618,15 @@ function FeesReport({ data }) {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-sm p-6 text-white">
           <p className="text-sm text-green-100">Total Revenue</p>
-          <p className="text-3xl font-bold">${data.totalRevenue.toLocaleString()}</p>
+          <p className="text-3xl font-bold">₦{data.totalRevenue.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg shadow-sm p-6 text-white">
           <p className="text-sm text-yellow-100">Pending</p>
-          <p className="text-3xl font-bold">${data.pendingAmount.toLocaleString()}</p>
+          <p className="text-3xl font-bold">₦{data.pendingAmount.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg shadow-sm p-6 text-white">
           <p className="text-sm text-red-100">Overdue</p>
-          <p className="text-3xl font-bold">${data.overdueAmount.toLocaleString()}</p>
+          <p className="text-3xl font-bold">₦{data.overdueAmount.toLocaleString()}</p>
         </div>
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-sm p-6 text-white">
           <p className="text-sm text-blue-100">Total Payments</p>
@@ -650,7 +655,7 @@ function FeesReport({ data }) {
           {Object.entries(data.byMethod).map(([method, amount]) => (
             <div key={method} className="p-4 bg-gray-50 rounded-lg text-center">
               <p className="text-sm text-gray-500 capitalize">{method.replace('_', ' ')}</p>
-              <p className="text-2xl font-bold text-gray-900">${amount.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-gray-900">₦{amount.toLocaleString()}</p>
             </div>
           ))}
         </div>

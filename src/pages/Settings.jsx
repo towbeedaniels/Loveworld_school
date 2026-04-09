@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import { User, Lock, Bell, Globe, Save, CheckCircle, AlertCircle } from 'lucide-react'
@@ -140,7 +140,7 @@ export default function Settings() {
   }
 
   // Load system settings from localStorage on mount
-  useState(() => {
+  useEffect(() => {
     const saved = localStorage.getItem('school_settings')
     if (saved) {
       try {
@@ -149,7 +149,7 @@ export default function Settings() {
         console.error('Failed to load settings:', e)
       }
     }
-  })
+  }, [])
 
   return (
     <div>

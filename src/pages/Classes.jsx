@@ -399,7 +399,7 @@ function SubjectsTab() {
   })
 
   const filteredSubjects = subjects.filter((subject) =>
-    `${subject.name} ${subject.code}`.toLowerCase().includes(searchTerm.toLowerCase())
+    `${subject.name} ${subject.code || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const handleSubmit = async (e) => {

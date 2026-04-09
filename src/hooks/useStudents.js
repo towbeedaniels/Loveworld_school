@@ -53,22 +53,16 @@ export function useStudents() {
 
   const addStudent = async (studentData) => {
     try {
-      console.log('Adding student with data:', studentData)
       const { data, error } = await supabase
         .from('students')
         .insert(studentData)
         .select()
         .single()
 
-      if (error) {
-        console.error('Supabase error adding student:', error)
-        throw error
-      }
-      console.log('Student added successfully:', data)
+      if (error) throw error
       await fetchStudents()
       return { data, error: null }
     } catch (err) {
-      console.error('Error in addStudent:', err)
       return { data: null, error: err.message }
     }
   }

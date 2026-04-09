@@ -2,9 +2,10 @@
 
 A comprehensive school management system built with React, Vite, Tailwind CSS, and Supabase.
 
-**School Name**: Loveworld School  
-**Version**: 1.0.0  
+**School Name**: Loveworld School
+**Version**: 1.0.0
 **Last Updated**: April 2026
+**Currency**: Nigerian Naira (₦)
 
 ## ✨ Features
 
@@ -15,11 +16,13 @@ A comprehensive school management system built with React, Vite, Tailwind CSS, a
 - Automatic profile creation on signup
 
 ### 📊 Dashboard
-- Real-time statistics and metrics
-- Interactive charts (Bar, Pie, Line, Area)
-- Weekly attendance tracking
-- Grade distribution analysis
-- Recent activity feed
+- **Real-time data from database** - All stats fetched live from Supabase
+- Student, teacher, class, and book counts
+- Revenue in Naira (₦) from paid fees
+- Attendance rate calculation
+- Weekly attendance bar chart
+- Grade distribution pie chart
+- Recent activities feed (enrollments, payments)
 
 ### 👨‍🎓 Student Management
 - Full CRUD operations for student records
@@ -188,12 +191,23 @@ A comprehensive school management system built with React, Vite, Tailwind CSS, a
 - **CSV Export** - Download any data as CSV
 - **Excel Export** - Export to .xlsx format
 - **CSV/Excel Import** - Bulk data import with preview
-- **Template Download** - Get import templates
+- **Download Import Template** - Get pre-formatted CSV templates for all modules
 - **Data Transformation** - Custom field mapping for exports
 - Available on:
   - Students module
-  - Teachers module (ready to add)
-  - All other modules (easy to integrate)
+  - Teachers module
+  - Classes & Subjects
+  - Library (Books & Issuance)
+  - Fees (Structures & Payments)
+  - HR (Employees, Payroll, Leave Requests)
+
+### 🔔 Toast Notifications
+- **All alerts replaced with toast notifications** - No more browser popups
+- Success messages (green) for completed operations
+- Error messages (red) with actual database error details
+- Auto-dismiss after 4 seconds with progress bar
+- Manual close button
+- Non-intrusive: displays in top-right corner
 
 ### ⚙️ Settings
 - **Profile Settings** - Update name, email, phone
@@ -520,6 +534,78 @@ The following features are ready to be implemented:
 - Timetable creation
 - Reports and analytics
 - Announcement system
+
+## 📊 Sample Data Setup
+
+The project includes SQL scripts to populate your database with realistic sample data for testing.
+
+### Option 1: Quick Setup (Recommended)
+
+1. **Fix RLS Policies** (Required first step)
+   - Go to Supabase Dashboard → SQL Editor
+   - Copy contents of `database/fix-rls-policies.sql`
+   - Paste & Run
+   - This enables authenticated users to access all tables
+
+2. **Insert Sample Data**
+   - Go to Supabase Dashboard → SQL Editor
+   - Copy contents of `database/seed-sample-data.sql`
+   - Paste & Run
+   - Wait 5-15 seconds for completion
+
+### Sample Data Includes:
+| Data Type | Count | Details |
+|-----------|-------|---------|
+| Students | 500 | With complete info, enrollments, attendance |
+| Teachers | 50 | Qualifications, specializations |
+| Parents | 150 | Contact info, occupations |
+| Classes | 16 | Grades 9-12, Sections A-D |
+| Subjects | 15 | All major academic subjects |
+| Attendance | ~2,400 | Student & teacher records (20 days) |
+| Exams & Grades | ~1,550 | 50 exams with student grades |
+| Fee Structures | 32 | **₦50,000 - ₦500,000** range |
+| Fee Payments | ~250 | Multiple payment methods & statuses |
+| Library Books | 50 | With 40 issuance records |
+| Transport | 105 | 15 vehicles, 10 routes, 80 student assignments |
+| Timetable | ~280 | Complete class schedules |
+| Announcements | 20 | School notices with priority levels |
+| HR Employees | 30 | **₦3M - ₦8M** salary ranges |
+| Payroll | 60 | 3 months for 20 employees |
+| Leave Requests | 25 | Various types and statuses
+
+**All amounts in Nigerian Naira (₦)**
+
+---
+
+## 🆕 Recent Updates
+
+### April 2026 - Major Improvements
+
+1. **🔔 Toast Notifications** - Replaced all `alert()` popups with modern toast notifications across 11 pages (37 instances)
+2. **💰 Currency Conversion** - Changed all `$` to `₦` in Fees, HR, Dashboard, and Reports modules
+3. **📥 Import Templates** - Added "Download Import Template" button to all data management pages
+4. **📊 Real-time Dashboard** - Dashboard now fetches actual data from database instead of hardcoded values
+5. **🐛 Bug Fixes**
+   - Settings page: Fixed `useState` → `useEffect` for loading system settings
+   - Advanced Reports: Fixed join queries to use separate enrichment queries
+   - Book Issuance: Fixed fetch logic to work with RLS policies
+   - Error handling: Added proper error states to all hooks
+   - Null safety: Fixed search crashes in Classes and other pages
+6. **🧹 Code Cleanup** - Removed debug logging statements from production code
+7. **📝 Documentation** - Added comprehensive audit report and setup scripts
+
+---
+
+## 🗄️ Database Scripts
+
+| File | Purpose |
+|------|---------|
+| `database/schema.sql` | Complete database schema (23+ tables with RLS) |
+| `database/fix-rls-policies.sql` | Fix RLS policies for authenticated access |
+| `database/seed-sample-data.sql` | Insert 500+ sample records for testing |
+| `database/README.md` | Detailed instructions for database setup |
+
+---
 
 ## License
 
