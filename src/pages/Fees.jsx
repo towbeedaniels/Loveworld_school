@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useToast } from '../components/Toast'
+import ExportImport from '../components/ExportImport'
 import { useFeeStructures, useFeePayments } from '../hooks/useFees'
 import { useStudents, useClasses } from '../hooks/useData'
 import {
@@ -7,7 +9,7 @@ import {
   Edit,
   Trash2,
   X,
-  DollarSign,
+  Banknote,
   CreditCard,
   ChevronLeft,
   ChevronRight,
@@ -38,7 +40,7 @@ export default function Fees() {
             }`}
           >
             <div className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5" />
+              <Banknote className="w-5 h-5" />
               Fee Structures
             </div>
           </button>
@@ -64,6 +66,7 @@ export default function Fees() {
 }
 
 function FeeStructuresTab() {
+  const toast = useToast()
   const { feeStructures, loading, addFeeStructure, updateFeeStructure, deleteFeeStructure } = useFeeStructures()
   const { classes } = useClasses()
   const [showModal, setShowModal] = useState(false)
@@ -107,16 +110,20 @@ function FeeStructuresTab() {
       const { error } = await updateFeeStructure(editingStructure.id, submissionData)
       if (error) {
         console.error('Error updating fee structure:', error)
-        alert(`Error updating fee structure: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating fee structure: ${errorMsg}`)
       } else {
+        toast.success('Fee structure updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addFeeStructure(submissionData)
       if (error) {
         console.error('Error adding fee structure:', error)
-        alert(`Error adding fee structure: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding fee structure: ${errorMsg}`)
       } else {
+        toast.success('Fee structure added successfully')
         resetForm()
       }
     }
@@ -154,7 +161,7 @@ function FeeStructuresTab() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center gap-3">
             <div className="bg-blue-100 p-2 rounded-lg">
-              <DollarSign className="w-5 h-5 text-blue-600" />
+              <Banknote className="w-5 h-5 text-blue-600" />
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900">{feeStructures.length}</p>
@@ -168,7 +175,7 @@ function FeeStructuresTab() {
               <TrendingUp className="w-5 h-5 text-green-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">${totalAmount.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-gray-900">₦{totalAmount.toLocaleString()}</p>
               <p className="text-sm text-gray-600">Total Amount</p>
             </div>
           </div>
@@ -201,13 +208,19 @@ function FeeStructuresTab() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus className="w-5 h-5" />
-            Add Fee Structure
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Plus className="w-5 h-5" />
+              Add Fee Structure
+            </button>
+            <ExportImport
+              entityType="fee_structure"
+              templateFields={['fee_name', 'amount', 'class_id', 'category', 'due_date', 'academic_year', 'description']}
+            />
+          </div>
         </div>
       </div>
 
@@ -253,7 +266,7 @@ function FeeStructuresTab() {
                         {structure.classes ? `${structure.classes.name} - ${structure.classes.section}` : 'All Classes'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                        ${parseFloat(structure.amount).toLocaleString()}
+                        ₦{parseFloat(structure.amount).toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="px-2 py-1 text-xs font-medium rounded-full capitalize bg-blue-100 text-blue-800">
@@ -346,7 +359,7 @@ function FeeStructuresTab() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Amount ($) *
+                    Amount (₦) *
                   </label>
                   <input
                     type="number"
@@ -427,6 +440,7 @@ function FeeStructuresTab() {
 }
 
 function PaymentsTab() {
+  const toast = useToast()
   const { payments, loading, addPayment, updatePayment, deletePayment } = useFeePayments()
   const { students } = useStudents()
   const { feeStructures } = useFeeStructures()
@@ -485,16 +499,20 @@ function PaymentsTab() {
       const { error } = await updatePayment(editingPayment.id, submissionData)
       if (error) {
         console.error('Error updating payment:', error)
-        alert(`Error updating payment: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating payment: ${errorMsg}`)
       } else {
+        toast.success('Payment updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addPayment(submissionData)
       if (error) {
         console.error('Error adding payment:', error)
-        alert(`Error adding payment: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding payment: ${errorMsg}`)
       } else {
+        toast.success('Payment added successfully')
         resetForm()
       }
     }
@@ -579,7 +597,7 @@ function PaymentsTab() {
               <CheckCircle className="w-5 h-5 text-green-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">${totalRevenue.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-gray-900">₦{totalRevenue.toLocaleString()}</p>
               <p className="text-sm text-gray-600">Total Revenue</p>
             </div>
           </div>
@@ -621,13 +639,19 @@ function PaymentsTab() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus className="w-5 h-5" />
-            Add Payment
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Plus className="w-5 h-5" />
+              Add Payment
+            </button>
+            <ExportImport
+              entityType="payment"
+              templateFields={['student_id', 'fee_structure_id', 'amount_paid', 'payment_date', 'payment_method', 'reference_number', 'status']}
+            />
+          </div>
         </div>
       </div>
 
@@ -679,7 +703,7 @@ function PaymentsTab() {
                         {payment.fee_structures?.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                        ${parseFloat(payment.amount_paid).toLocaleString()}
+                        ₦{parseFloat(payment.amount_paid).toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {new Date(payment.payment_date).toLocaleDateString()}
@@ -794,7 +818,7 @@ function PaymentsTab() {
                     <option value="">Select Fee</option>
                     {feeStructures.map((fee) => (
                       <option key={fee.id} value={fee.id}>
-                        {fee.name} (${fee.amount})
+                        {fee.name} (₦{fee.amount})
                       </option>
                     ))}
                   </select>
@@ -802,7 +826,7 @@ function PaymentsTab() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Amount Paid ($) *
+                    Amount Paid (₦) *
                   </label>
                   <input
                     type="number"

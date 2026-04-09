@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTeachers } from '../hooks/useTeachers'
+import { useToast } from '../components/Toast'
 import ExportImport from '../components/ExportImport'
 import {
   Plus,
@@ -17,6 +18,7 @@ import {
 
 export default function Teachers() {
   const { teachers, loading, addTeacher, updateTeacher, deleteTeacher } = useTeachers()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingTeacher, setEditingTeacher] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -64,23 +66,26 @@ export default function Teachers() {
     const submissionData = {
       ...formData,
       date_of_birth: formData.date_of_birth || null,
-      hire_date: formData.hire_date || new Date().toISOString().split('T')[0],
     }
 
     if (editingTeacher) {
       const { error } = await updateTeacher(editingTeacher.id, submissionData)
       if (error) {
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
         console.error('Error updating teacher:', error)
-        alert(`Error updating teacher: ${error.message || 'Unknown error'}`)
+        toast.error(`Error updating teacher: ${errorMsg}`)
       } else {
+        toast.success('Teacher updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addTeacher(submissionData)
       if (error) {
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
         console.error('Error adding teacher:', error)
-        alert(`Error adding teacher: ${error.message || 'Unknown error'}`)
+        toast.error(`Error adding teacher: ${errorMsg}`)
       } else {
+        toast.success('Teacher added successfully')
         resetForm()
       }
     }
@@ -187,13 +192,37 @@ export default function Teachers() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus className="w-5 h-5" />
-            Add Teacher
-          </button>
+          <div className="flex gap-2">
+            <ExportImport
+              data={teachers}
+              filename="teachers"
+              onImport={(importedData) => {
+                console.log('Imported:', importedData)
+              }}
+              templateFields={[
+                { key: 'teacher_number', label: 'Teacher Number', example: 'TCH001' },
+                { key: 'first_name', label: 'First Name', example: 'Jane' },
+                { key: 'last_name', label: 'Last Name', example: 'Smith' },
+                { key: 'date_of_birth', label: 'Date of Birth', example: '1990-05-15' },
+                { key: 'gender', label: 'Gender', example: 'female' },
+                { key: 'qualification', label: 'Qualification', example: 'PhD, Masters, B.Ed' },
+                { key: 'experience_years', label: 'Experience (Years)', example: '5' },
+                { key: 'specialization', label: 'Specialization', example: 'Mathematics' },
+                { key: 'join_date', label: 'Join Date', example: '2024-09-01' },
+                { key: 'status', label: 'Status', example: 'active' },
+                { key: 'phone', label: 'Phone', example: '+1234567890' },
+                { key: 'email', label: 'Email', example: 'teacher@school.com' },
+                { key: 'address', label: 'Address', example: '123 Main St' }
+              ]}
+            />
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Plus className="w-5 h-5" />
+              Add Teacher
+            </button>
+          </div>
         </div>
       </div>
 

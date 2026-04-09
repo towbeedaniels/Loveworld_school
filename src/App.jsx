@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { ToastProvider } from './components/Toast'
 import SchoolWebsite from './pages/SchoolWebsite'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -34,7 +35,8 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Routes>
+        <ToastProvider>
+          <Routes>
           {/* Public School Website - Home */}
           <Route path="/" element={<SchoolWebsite />} />
           
@@ -68,6 +70,7 @@ function App() {
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
+        </ToastProvider>
       </AuthProvider>
     </Router>
   )

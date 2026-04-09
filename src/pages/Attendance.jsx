@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAttendance } from '../hooks/useAttendance'
 import { useStudents } from '../hooks/useData'
+import { useToast } from '../components/Toast'
 import {
   Calendar,
   Plus,
@@ -69,6 +70,7 @@ export default function Attendance() {
 function StudentAttendance() {
   const { attendance, loading, markAttendance, updateAttendance, deleteAttendance } = useAttendance()
   const { students } = useStudents()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingRecord, setEditingRecord] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -125,16 +127,20 @@ function StudentAttendance() {
       const { error } = await updateAttendance(editingRecord.id, formData)
       if (error) {
         console.error('Error updating attendance:', error)
-        alert(`Error updating attendance: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating attendance: ${errorMsg}`)
       } else {
+        toast.success('Attendance updated successfully')
         resetForm()
       }
     } else {
       const { error } = await markAttendance([formData])
       if (error) {
         console.error('Error adding attendance:', error)
-        alert(`Error adding attendance: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding attendance: ${errorMsg}`)
       } else {
+        toast.success('Attendance added successfully')
         resetForm()
       }
     }

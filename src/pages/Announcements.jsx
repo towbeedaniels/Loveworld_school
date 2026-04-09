@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useToast } from '../components/Toast'
 import { useAnnouncements } from '../hooks/useTimetable'
 import {
   Plus,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react'
 
 export default function Announcements() {
+  const toast = useToast()
   const { announcements, loading, addAnnouncement, updateAnnouncement, deleteAnnouncement } =
     useAnnouncements()
   const [showModal, setShowModal] = useState(false)
@@ -58,16 +60,20 @@ export default function Announcements() {
       const { error } = await updateAnnouncement(editingAnnouncement.id, announcementData)
       if (error) {
         console.error('Error updating announcement:', error)
-        alert(`Error updating announcement: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating announcement: ${errorMsg}`)
       } else {
+        toast.success('Announcement updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addAnnouncement(announcementData)
       if (error) {
         console.error('Error adding announcement:', error)
-        alert(`Error adding announcement: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding announcement: ${errorMsg}`)
       } else {
+        toast.success('Announcement created successfully')
         resetForm()
       }
     }

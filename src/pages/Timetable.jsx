@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useToast } from '../components/Toast'
 import { useTimetable } from '../hooks/useTimetable'
 import { useClasses, useSubjects, useTeachers } from '../hooks/useData'
 import {
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react'
 
 export default function Timetable() {
+  const toast = useToast()
   const { timetable, loading, addEntry, updateEntry, deleteEntry } = useTimetable()
   const { classes } = useClasses()
   const { subjects } = useSubjects()
@@ -50,16 +52,20 @@ export default function Timetable() {
       const { error } = await updateEntry(editingEntry.id, formData)
       if (error) {
         console.error('Error updating timetable entry:', error)
-        alert(`Error updating timetable entry: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating timetable entry: ${errorMsg}`)
       } else {
+        toast.success('Timetable entry updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addEntry(formData)
       if (error) {
         console.error('Error adding timetable entry:', error)
-        alert(`Error adding timetable entry: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding timetable entry: ${errorMsg}`)
       } else {
+        toast.success('Timetable entry added successfully')
         resetForm()
       }
     }

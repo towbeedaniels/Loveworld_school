@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStudents } from '../hooks/useStudents'
+import { useToast } from '../components/Toast'
 import ExportImport from '../components/ExportImport'
 import {
   Plus,
@@ -17,6 +18,7 @@ import {
 
 export default function Students() {
   const { students, loading, addStudent, updateStudent, deleteStudent } = useStudents()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingStudent, setEditingStudent] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -64,8 +66,9 @@ export default function Students() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    const { phone, email, ...validFields } = formData
     const submissionData = {
-      ...formData,
+      ...validFields,
       date_of_birth: formData.date_of_birth || null,
       admission_date: formData.admission_date || new Date().toISOString().split('T')[0],
       parent_guardian_id: formData.parent_guardian_id || null,
@@ -75,16 +78,20 @@ export default function Students() {
       const { error } = await updateStudent(editingStudent.id, submissionData)
       if (error) {
         console.error('Error updating student:', error)
-        alert(`Error updating student: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating student: ${errorMsg}`)
       } else {
+        toast.success('Student updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addStudent(submissionData)
       if (error) {
         console.error('Error adding student:', error)
-        alert(`Error adding student: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding student: ${errorMsg}`)
       } else {
+        toast.success('Student added successfully')
         resetForm()
       }
     }
@@ -221,6 +228,22 @@ export default function Students() {
                 console.log('Imported:', importedData)
                 // Handle import logic here
               }}
+              templateFields={[
+                { key: 'student_number', label: 'Student Number', example: 'STU001' },
+                { key: 'first_name', label: 'First Name', example: 'John' },
+                { key: 'last_name', label: 'Last Name', example: 'Doe' },
+                { key: 'date_of_birth', label: 'Date of Birth', example: '2010-01-15' },
+                { key: 'gender', label: 'Gender', example: 'male' },
+                { key: 'blood_group', label: 'Blood Group', example: 'A+' },
+                { key: 'admission_date', label: 'Admission Date', example: '2024-09-01' },
+                { key: 'status', label: 'Status', example: 'active' },
+                { key: 'address', label: 'Address', example: '123 Main St' },
+                { key: 'city', label: 'City', example: 'New York' },
+                { key: 'state', label: 'State', example: 'NY' },
+                { key: 'zip_code', label: 'Zip Code', example: '10001' },
+                { key: 'country', label: 'Country', example: 'USA' },
+                { key: 'parent_guardian_id', label: 'Parent/Guardian ID', example: 'uuid-here' }
+              ]}
             />
             <button
               onClick={() => setShowModal(true)}

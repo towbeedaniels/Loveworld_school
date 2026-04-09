@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useBooks, useBookIssuance } from '../hooks/useLibrary'
 import { useStudents } from '../hooks/useData'
+import { useToast } from '../components/Toast'
+import ExportImport from '../components/ExportImport'
 import {
   Plus,
   Search,
@@ -65,6 +67,7 @@ export default function Library() {
 
 function BooksTab() {
   const { books, loading, addBook, updateBook, deleteBook } = useBooks()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingBook, setEditingBook] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -117,16 +120,20 @@ function BooksTab() {
       const { error } = await updateBook(editingBook.id, submissionData)
       if (error) {
         console.error('Error updating book:', error)
-        alert(`Error updating book: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating book: ${errorMsg}`)
       } else {
+        toast.success('Book updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addBook(submissionData)
       if (error) {
         console.error('Error adding book:', error)
-        alert(`Error adding book: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding book: ${errorMsg}`)
       } else {
+        toast.success('Book added successfully')
         resetForm()
       }
     }
@@ -223,13 +230,19 @@ function BooksTab() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus className="w-5 h-5" />
-            Add Book
-          </button>
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <ExportImport
+              entityType="book"
+              templateFields={['title', 'author', 'isbn', 'publisher', 'publication_year', 'category', 'total_copies', 'available_copies', 'shelf_location']}
+            />
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Plus className="w-5 h-5" />
+              Add Book
+            </button>
+          </div>
         </div>
       </div>
 
@@ -539,6 +552,7 @@ function IssuanceTab() {
   const { issuances, loading, issueBook, returnBook, deleteIssuance } = useBookIssuance()
   const { students } = useStudents()
   const { books } = useBooks()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [showReturnModal, setShowReturnModal] = useState(false)
   const [returningIssuance, setReturningIssuance] = useState(null)
@@ -585,8 +599,10 @@ function IssuanceTab() {
     const { error } = await issueBook(formData)
     if (error) {
       console.error('Error issuing book:', error)
-      alert(`Error issuing book: ${error.message || 'Unknown error'}`)
+      const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+      toast.error(`Error issuing book: ${errorMsg}`)
     } else {
+      toast.success('Book issued successfully')
       setShowModal(false)
       setFormData({
         book_id: '',
@@ -705,13 +721,19 @@ function IssuanceTab() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus className="w-5 h-5" />
-            Issue Book
-          </button>
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <ExportImport
+              entityType="book_issuance"
+              templateFields={['book_id', 'student_id', 'issue_date', 'due_date', 'return_date', 'status']}
+            />
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Plus className="w-5 h-5" />
+              Issue Book
+            </button>
+          </div>
         </div>
       </div>
 

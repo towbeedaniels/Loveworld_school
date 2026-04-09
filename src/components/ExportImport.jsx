@@ -1,13 +1,14 @@
 import { useState, useRef } from 'react'
-import { Download, Upload, FileText, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { Download, Upload, FileText, X, CheckCircle, AlertCircle, FileSpreadsheet } from 'lucide-react'
 import { exportToCSV, exportToExcel, importFromCSV, importFromExcel } from '../utils/exportImport'
 
-export default function ExportImport({ 
-  data, 
-  filename, 
-  fields, 
+export default function ExportImport({
+  data,
+  filename,
+  fields,
   onImport,
-  transformFn 
+  transformFn,
+  templateFields = []
 }) {
   const [showModal, setShowModal] = useState(false)
   const [activeTab, setActiveTab] = useState('export')
@@ -25,10 +26,31 @@ export default function ExportImport({
   }
 
   const handleExportExcel = () => {
-    const exportData = transformFn 
-      ? transformFn(data) 
+    const exportData = transformFn
+      ? transformFn(data)
       : data
     exportToExcel(exportData, filename)
+  }
+
+  const handleDownloadTemplate = () => {
+    const fieldsToUse = templateFields.length > 0 ? templateFields : fields
+    const templateData = [fieldsToUse.reduce((acc, field) => {
+      acc[field.key] = field.example || `Example ${field.label}`
+      return acc
+    }, {})]
+    
+    const templateHeaders = fieldsToUse.map(f => f.label)
+    const csvContent = [
+      templateHeaders.join(','),
+      fieldsToUse.map(f => `"${f.example || `Example ${f.label}`}"`).join(',')
+    ].join('\n')
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `${filename}_template.csv`
+    link.click()
+    URL.revokeObjectURL(link.href)
   }
 
   const handleFileSelect = (e) => {
@@ -169,6 +191,28 @@ export default function ExportImport({
                     <p className="text-gray-600 mb-4">
                       Upload a CSV or Excel file to import data.
                     </p>
+                    
+                    {/* Download Template Button */}
+                    {templateFields.length > 0 && (
+                      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex items-start gap-3">
+                          <FileSpreadsheet className="w-5 h-5 text-blue-600 mt-0.5" />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-900 mb-2">
+                              New to importing? Download a template first!
+                            </p>
+                            <button
+                              onClick={handleDownloadTemplate}
+                              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition"
+                            >
+                              <Download className="w-4 h-4" />
+                              Download Import Template
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                       <input
                         ref={fileInputRef}

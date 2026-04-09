@@ -94,18 +94,58 @@ export function useBookIssuance() {
   const fetchIssuances = async () => {
     try {
       setLoading(true)
+      // Fetch issuances first without joins
       const { data, error } = await supabase
         .from('book_issuance')
-        .select(`
-          *,
-          books (title, author),
-          students (first_name, last_name, student_number)
-        `)
+        .select('*')
         .order('issue_date', { ascending: false })
 
-      if (error) throw error
-      setIssuances(data || [])
+      if (error) {
+        console.error('Supabase error fetching issuances:', error)
+        throw error
+      }
+      
+      console.log('Fetched issuances:', data?.length)
+      
+      // Enrich with book and student data separately
+      if (data && data.length > 0) {
+        const bookIds = [...new Set(data.map(i => i.book_id).filter(Boolean))]
+        const studentIds = [...new Set(data.map(i => i.student_id).filter(Boolean))]
+        
+        console.log('Fetching books for IDs:', bookIds)
+        console.log('Fetching students for IDs:', studentIds)
+        
+        const { data: books, error: booksError } = await supabase
+          .from('books')
+          .select('id, title, author')
+          .in('id', bookIds)
+        
+        if (booksError) console.error('Error fetching books:', booksError)
+        
+        const { data: students, error: studentsError } = await supabase
+          .from('students')
+          .select('id, first_name, last_name, student_number')
+          .in('id', studentIds)
+        
+        if (studentsError) console.error('Error fetching students:', studentsError)
+        
+        console.log('Fetched books:', books?.length)
+        console.log('Fetched students:', students?.length)
+        
+        const enrichedIssuances = data.map(issuance => ({
+          ...issuance,
+          books: books?.find(b => b.id === issuance.book_id) || null,
+          students: students?.find(s => s.id === issuance.student_id) || null,
+        }))
+        
+        console.log('Enriched issuances:', enrichedIssuances.length)
+        setIssuances(enrichedIssuances)
+      } else {
+        console.log('No issuances found')
+        setIssuances(data || [])
+      }
     } catch (err) {
+      console.error('Error in fetchIssuances:', err)
       setError(err.message)
     } finally {
       setLoading(false)

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useVehicles, useRoutes, useStudentTransport } from '../hooks/useTransport'
 import { useStudents } from '../hooks/useData'
+import { useToast } from '../components/Toast'
 import {
   Plus,
   Search,
@@ -84,6 +85,7 @@ export default function Transport() {
 
 function VehiclesTab() {
   const { vehicles, loading, addVehicle, updateVehicle, deleteVehicle } = useVehicles()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingVehicle, setEditingVehicle] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -122,16 +124,20 @@ function VehiclesTab() {
       const { error } = await updateVehicle(editingVehicle.id, submissionData)
       if (error) {
         console.error('Error updating vehicle:', error)
-        alert(`Error updating vehicle: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating vehicle: ${errorMsg}`)
       } else {
+        toast.success('Vehicle updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addVehicle(submissionData)
       if (error) {
         console.error('Error adding vehicle:', error)
-        alert(`Error adding vehicle: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding vehicle: ${errorMsg}`)
       } else {
+        toast.success('Vehicle added successfully')
         resetForm()
       }
     }
@@ -478,6 +484,7 @@ function VehiclesTab() {
 function RoutesTab() {
   const { routes, loading, addRoute, updateRoute, deleteRoute } = useRoutes()
   const { vehicles } = useVehicles()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingRoute, setEditingRoute] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -515,16 +522,20 @@ function RoutesTab() {
       const { error } = await updateRoute(editingRoute.id, routeData)
       if (error) {
         console.error('Error updating route:', error)
-        alert(`Error updating route: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating route: ${errorMsg}`)
       } else {
+        toast.success('Route updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addRoute(routeData)
       if (error) {
         console.error('Error adding route:', error)
-        alert(`Error adding route: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding route: ${errorMsg}`)
       } else {
+        toast.success('Route added successfully')
         resetForm()
       }
     }
@@ -840,6 +851,7 @@ function StudentTransportTab() {
     useStudentTransport()
   const { students } = useStudents()
   const { routes } = useRoutes()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingRecord, setEditingRecord] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -868,16 +880,20 @@ function StudentTransportTab() {
       const { error } = await updateTransport(editingRecord.id, formData)
       if (error) {
         console.error('Error updating transport record:', error)
-        alert(`Error updating transport record: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating transport record: ${errorMsg}`)
       } else {
+        toast.success('Transport record updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addTransport(formData)
       if (error) {
         console.error('Error adding transport record:', error)
-        alert(`Error adding transport record: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding transport record: ${errorMsg}`)
       } else {
+        toast.success('Transport record added successfully')
         resetForm()
       }
     }

@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { useToast } from '../components/Toast'
 import { useEmployees, usePayroll, useLeaveRequests } from '../hooks/useHR'
+import ExportImport from '../components/ExportImport'
 import {
   Users,
   UserCheck,
@@ -83,6 +85,7 @@ export default function HR() {
 // Employees Tab Component
 function EmployeesTab({ searchTerm, setSearchTerm }) {
   const { employees, loading, addEmployee, updateEmployee, deleteEmployee } = useEmployees()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingEmployee, setEditingEmployee] = useState(null)
   const [formData, setFormData] = useState({
@@ -141,8 +144,10 @@ function EmployeesTab({ searchTerm, setSearchTerm }) {
 
     if (result.error) {
       console.error('Error saving employee:', result.error)
-      alert(`Error saving employee: ${result.error}`)
+      const errorMsg = typeof result.error === 'string' ? result.error : result.error.message || 'Unknown error'
+      toast.error(`Error saving employee: ${errorMsg}`)
     } else {
+      toast.success(editingEmployee ? 'Employee updated successfully' : 'Employee added successfully')
       resetForm()
     }
   }
@@ -157,7 +162,10 @@ function EmployeesTab({ searchTerm, setSearchTerm }) {
     if (!confirm('Are you sure you want to delete this employee?')) return
     const result = await deleteEmployee(id)
     if (result.error) {
-      alert('Error: ' + result.error)
+      const errorMsg = typeof result.error === 'string' ? result.error : result.error.message || 'Unknown error'
+      toast.error('Error: ' + errorMsg)
+    } else {
+      toast.success('Employee deleted successfully')
     }
   }
 
@@ -255,13 +263,30 @@ function EmployeesTab({ searchTerm, setSearchTerm }) {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus className="w-5 h-5" />
-            Add Employee
-          </button>
+          <div className="flex gap-2">
+            <ExportImport
+              data={filteredEmployees}
+              filename="employees"
+              templateFields={[
+                { key: 'first_name', label: 'First Name', example: 'John' },
+                { key: 'last_name', label: 'Last Name', example: 'Doe' },
+                { key: 'email', label: 'Email', example: 'john.doe@example.com' },
+                { key: 'phone', label: 'Phone', example: '+1234567890' },
+                { key: 'department', label: 'Department', example: 'Science' },
+                { key: 'position', label: 'Position', example: 'Teacher' },
+                { key: 'salary', label: 'Salary', example: '50000' },
+                { key: 'hire_date', label: 'Hire Date', example: '2024-01-15' },
+                { key: 'status', label: 'Status', example: 'active' },
+              ]}
+            />
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Plus className="w-5 h-5" />
+              Add Employee
+            </button>
+          </div>
         </div>
       </div>
 
@@ -567,6 +592,7 @@ function EmployeesTab({ searchTerm, setSearchTerm }) {
 function PayrollTab() {
   const { employees } = useEmployees()
   const { payroll, loading, addPayroll, updatePayroll, deletePayroll } = usePayroll()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingPayroll, setEditingPayroll] = useState(null)
   const [formData, setFormData] = useState({
@@ -642,8 +668,10 @@ function PayrollTab() {
 
     if (result.error) {
       console.error('Error saving payroll record:', result.error)
-      alert(`Error saving payroll record: ${result.error}`)
+      const errorMsg = typeof result.error === 'string' ? result.error : result.error.message || 'Unknown error'
+      toast.error(`Error saving payroll record: ${errorMsg}`)
     } else {
+      toast.success(editingPayroll ? 'Payroll record updated successfully' : 'Payroll record added successfully')
       resetForm()
     }
   }
@@ -658,7 +686,10 @@ function PayrollTab() {
     if (!confirm('Are you sure you want to delete this payroll record?')) return
     const result = await deletePayroll(id)
     if (result.error) {
-      alert('Error: ' + result.error)
+      const errorMsg = typeof result.error === 'string' ? result.error : result.error.message || 'Unknown error'
+      toast.error('Error: ' + errorMsg)
+    } else {
+      toast.success('Payroll record deleted successfully')
     }
   }
 
@@ -742,13 +773,28 @@ function PayrollTab() {
 
       {/* Add Payroll Button */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-        >
-          <Plus className="w-5 h-5" />
-          Add Payroll Record
-        </button>
+        <div className="flex gap-2">
+          <ExportImport
+            data={payroll}
+            filename="payroll"
+            templateFields={[
+              { key: 'employee_id', label: 'Employee ID', example: 'EMP-001' },
+              { key: 'month', label: 'Month', example: '1' },
+              { key: 'year', label: 'Year', example: '2024' },
+              { key: 'basic_salary', label: 'Basic Salary', example: '50000' },
+              { key: 'allowances', label: 'Allowances', example: '10000' },
+              { key: 'deductions', label: 'Deductions', example: '5000' },
+              { key: 'net_salary', label: 'Net Salary', example: '55000' },
+            ]}
+          />
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+          >
+            <Plus className="w-5 h-5" />
+            Add Payroll Record
+          </button>
+        </div>
       </div>
 
       {/* Payroll Table */}
@@ -996,6 +1042,7 @@ function PayrollTab() {
 function LeaveManagementTab() {
   const { employees } = useEmployees()
   const { leaveRequests, loading, addLeaveRequest, updateLeaveRequest, deleteLeaveRequest } = useLeaveRequests()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingLeave, setEditingLeave] = useState(null)
   const [formData, setFormData] = useState({
@@ -1051,8 +1098,10 @@ function LeaveManagementTab() {
 
     if (result.error) {
       console.error('Error saving leave request:', result.error)
-      alert(`Error saving leave request: ${result.error}`)
+      const errorMsg = typeof result.error === 'string' ? result.error : result.error.message || 'Unknown error'
+      toast.error(`Error saving leave request: ${errorMsg}`)
     } else {
+      toast.success(editingLeave ? 'Leave request updated successfully' : 'Leave request submitted successfully')
       resetForm()
     }
   }
@@ -1067,25 +1116,34 @@ function LeaveManagementTab() {
     if (!confirm('Are you sure you want to delete this leave request?')) return
     const result = await deleteLeaveRequest(id)
     if (result.error) {
-      alert('Error: ' + result.error)
+      const errorMsg = typeof result.error === 'string' ? result.error : result.error.message || 'Unknown error'
+      toast.error('Error: ' + errorMsg)
+    } else {
+      toast.success('Leave request deleted successfully')
     }
   }
 
   const handleApprove = async (id) => {
     const result = await updateLeaveRequest(id, { status: 'approved', approved_at: new Date().toISOString() })
     if (result.error) {
-      alert('Error: ' + result.error)
+      const errorMsg = typeof result.error === 'string' ? result.error : result.error.message || 'Unknown error'
+      toast.error('Error: ' + errorMsg)
+    } else {
+      toast.success('Leave request approved successfully')
     }
   }
 
   const handleReject = async (id) => {
     const reason = prompt('Enter rejection reason (optional):')
-    const result = await updateLeaveRequest(id, { 
-      status: 'rejected', 
-      rejection_reason: reason 
+    const result = await updateLeaveRequest(id, {
+      status: 'rejected',
+      rejection_reason: reason
     })
     if (result.error) {
-      alert('Error: ' + result.error)
+      const errorMsg = typeof result.error === 'string' ? result.error : result.error.message || 'Unknown error'
+      toast.error('Error: ' + errorMsg)
+    } else {
+      toast.success('Leave request rejected')
     }
   }
 
@@ -1164,13 +1222,27 @@ function LeaveManagementTab() {
 
       {/* Add Leave Request Button */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-        >
-          <Plus className="w-5 h-5" />
-          Add Leave Request
-        </button>
+        <div className="flex gap-2">
+          <ExportImport
+            data={leaveRequests}
+            filename="leave_requests"
+            templateFields={[
+              { key: 'employee_id', label: 'Employee ID', example: 'EMP-001' },
+              { key: 'leave_type', label: 'Leave Type', example: 'sick' },
+              { key: 'start_date', label: 'Start Date', example: '2024-01-15' },
+              { key: 'end_date', label: 'End Date', example: '2024-01-17' },
+              { key: 'reason', label: 'Reason', example: 'Medical appointment' },
+              { key: 'status', label: 'Status', example: 'pending' },
+            ]}
+          />
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+          >
+            <Plus className="w-5 h-5" />
+            Add Leave Request
+          </button>
+        </div>
       </div>
 
       {/* Leave Requests Table */}

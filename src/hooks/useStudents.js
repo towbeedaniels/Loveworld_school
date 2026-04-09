@@ -11,16 +11,40 @@ export function useStudents() {
       setLoading(true)
       const { data, error } = await supabase
         .from('students')
-        .select(`
-          *,
-          classes (name, section),
-          parents (first_name, last_name, phone, email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
 
       if (error) throw error
-      setStudents(data || [])
+      
+      // If there are students, try to enrich with class/parent data
+      if (data && data.length > 0) {
+        const studentIds = data.map(s => s.id)
+        const { data: enrollments } = await supabase
+          .from('enrollments')
+          .select('student_id, classes(name, section)')
+          .in('student_id', studentIds)
+        
+        const { data: parents } = await supabase
+          .from('parents')
+          .select('id, first_name, last_name, phone, email')
+          .in('id', data.map(s => s.parent_guardian_id).filter(Boolean))
+
+        const enrichedStudents = data.map(student => {
+          const enrollment = enrollments?.find(e => e.student_id === student.id)
+          const parent = parents?.find(p => p.id === student.parent_guardian_id)
+          return {
+            ...student,
+            classes: enrollment?.classes || null,
+            parents: parent || null,
+          }
+        })
+        
+        setStudents(enrichedStudents)
+      } else {
+        setStudents(data || [])
+      }
     } catch (err) {
+      console.error('Error fetching students:', err)
       setError(err.message)
     } finally {
       setLoading(false)
@@ -29,16 +53,22 @@ export function useStudents() {
 
   const addStudent = async (studentData) => {
     try {
+      console.log('Adding student with data:', studentData)
       const { data, error } = await supabase
         .from('students')
         .insert(studentData)
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error adding student:', error)
+        throw error
+      }
+      console.log('Student added successfully:', data)
       await fetchStudents()
       return { data, error: null }
     } catch (err) {
+      console.error('Error in addStudent:', err)
       return { data: null, error: err.message }
     }
   }

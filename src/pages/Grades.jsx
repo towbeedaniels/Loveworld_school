@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useExaminations, useGrades } from '../hooks/useGrades'
 import { useStudents, useClasses } from '../hooks/useData'
+import { useToast } from '../components/Toast'
 import {
   Plus,
   Search,
@@ -62,6 +63,7 @@ export default function Grades() {
 }
 
 function ExaminationsTab() {
+  const toast = useToast()
   const { examinations, loading, addExamination, updateExamination, deleteExamination } = useExaminations()
   const { classes } = useClasses()
   const [showModal, setShowModal] = useState(false)
@@ -116,16 +118,20 @@ function ExaminationsTab() {
       const { error } = await updateExamination(editingExam.id, submissionData)
       if (error) {
         console.error('Error updating examination:', error)
-        alert(`Error updating examination: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating examination: ${errorMsg}`)
       } else {
+        toast.success('Examination updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addExamination(submissionData)
       if (error) {
         console.error('Error adding examination:', error)
-        alert(`Error adding examination: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding examination: ${errorMsg}`)
       } else {
+        toast.success('Examination added successfully')
         resetForm()
       }
     }
@@ -477,6 +483,7 @@ function ExaminationsTab() {
 }
 
 function GradesTab() {
+  const toast = useToast()
   const { grades, loading, addGrade, updateGrade, deleteGrade } = useGrades()
   const { examinations } = useExaminations()
   const { students } = useStudents()
@@ -549,16 +556,20 @@ function GradesTab() {
       const { error } = await updateGrade(editingGrade.id, gradeData)
       if (error) {
         console.error('Error updating grade:', error)
-        alert(`Error updating grade: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating grade: ${errorMsg}`)
       } else {
+        toast.success('Grade updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addGrade(gradeData)
       if (error) {
         console.error('Error adding grade:', error)
-        alert(`Error adding grade: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding grade: ${errorMsg}`)
       } else {
+        toast.success('Grade added successfully')
         resetForm()
       }
     }

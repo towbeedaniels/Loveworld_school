@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useClasses } from '../hooks/useClasses'
 import { useSubjects } from '../hooks/useSubjects'
+import { useToast } from '../components/Toast'
+import ExportImport from '../components/ExportImport'
 import {
   Plus,
   Search,
@@ -64,6 +66,7 @@ export default function Classes() {
 
 function ClassesTab() {
   const { classes, loading, addClass, updateClass, deleteClass } = useClasses()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingClass, setEditingClass] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -94,16 +97,20 @@ function ClassesTab() {
       const { error } = await updateClass(editingClass.id, submissionData)
       if (error) {
         console.error('Error updating class:', error)
-        alert(`Error updating class: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating class: ${errorMsg}`)
       } else {
+        toast.success('Class updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addClass(submissionData)
       if (error) {
         console.error('Error adding class:', error)
-        alert(`Error adding class: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding class: ${errorMsg}`)
       } else {
+        toast.success('Class added successfully')
         resetForm()
       }
     }
@@ -150,13 +157,31 @@ function ClassesTab() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus className="w-5 h-5" />
-            Add Class
-          </button>
+          <div className="flex gap-2">
+            <ExportImport
+              data={classes}
+              filename="classes"
+              onImport={(importedData) => {
+                console.log('Imported:', importedData)
+              }}
+              templateFields={[
+                { key: 'name', label: 'Class Name', example: 'Grade 10A' },
+                { key: 'section', label: 'Section', example: 'A' },
+                { key: 'grade_level', label: 'Grade Level', example: '10' },
+                { key: 'teacher_id', label: 'Teacher ID', example: 'uuid-here' },
+                { key: 'room_number', label: 'Room Number', example: '101' },
+                { key: 'capacity', label: 'Capacity', example: '30' },
+                { key: 'academic_year', label: 'Academic Year', example: '2024-2025' }
+              ]}
+            />
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Plus className="w-5 h-5" />
+              Add Class
+            </button>
+          </div>
         </div>
       </div>
 
@@ -363,6 +388,7 @@ function ClassesTab() {
 
 function SubjectsTab() {
   const { subjects, loading, addSubject, updateSubject, deleteSubject } = useSubjects()
+  const toast = useToast()
   const [showModal, setShowModal] = useState(false)
   const [editingSubject, setEditingSubject] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
@@ -383,16 +409,20 @@ function SubjectsTab() {
       const { error } = await updateSubject(editingSubject.id, formData)
       if (error) {
         console.error('Error updating subject:', error)
-        alert(`Error updating subject: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error updating subject: ${errorMsg}`)
       } else {
+        toast.success('Subject updated successfully')
         resetForm()
       }
     } else {
       const { error } = await addSubject(formData)
       if (error) {
         console.error('Error adding subject:', error)
-        alert(`Error adding subject: ${error.message || 'Unknown error'}`)
+        const errorMsg = typeof error === 'string' ? error : error.message || 'Unknown error'
+        toast.error(`Error adding subject: ${errorMsg}`)
       } else {
+        toast.success('Subject added successfully')
         resetForm()
       }
     }
@@ -435,13 +465,27 @@ function SubjectsTab() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus className="w-5 h-5" />
-            Add Subject
-          </button>
+          <div className="flex gap-2">
+            <ExportImport
+              data={subjects}
+              filename="subjects"
+              onImport={(importedData) => {
+                console.log('Imported:', importedData)
+              }}
+              templateFields={[
+                { key: 'name', label: 'Subject Name', example: 'Mathematics' },
+                { key: 'code', label: 'Subject Code', example: 'MATH101' },
+                { key: 'description', label: 'Description', example: 'Advanced Mathematics' }
+              ]}
+            />
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Plus className="w-5 h-5" />
+              Add Subject
+            </button>
+          </div>
         </div>
       </div>
 
