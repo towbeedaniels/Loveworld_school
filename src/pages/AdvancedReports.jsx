@@ -311,11 +311,11 @@ export default function AdvancedReports() {
 
     if (gradesError) {
       console.error('Error fetching grades for performance:', gradesError)
-      grades = []
     }
 
+    const gradesData = grades ?? []
     const studentGrades = {}
-    grades?.forEach(g => {
+    gradesData.forEach(g => {
       if (!studentGrades[g.student_id]) {
         studentGrades[g.student_id] = []
       }
